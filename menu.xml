@@ -1,37 +1,32 @@
-<menu>
-    <menuitem label='Painéis'>
-        <icon>fa:reorder fa-fw</icon>
-        <menu>
-              <menuitem label='Dashboard'>
-                  <icon>fa:dashboard fa-fw</icon>
-                  <action>Dashboard</action>
-              </menuitem>
-        </menu>
+<menu>    
+    <menuitem label='Dashboard'>
+        <icon>fa:dashboard fa-fw</icon>
+        <action>Dashboard</action>
     </menuitem>
-    <menuitem label='Cadastros'>
-        <icon>fa:cubes fa-fw</icon>
-        <menu>
-              <menuitem label='Cidades'>
-                  <icon>fa:building fa-fw</icon>
-                  <action>CidadeList</action>
-              </menuitem>
-              <menuitem label='Clientes'>
-                  <icon>fa:group fa-fw</icon>
-                  <action>ClienteList</action>
-              </menuitem>
-              <menuitem label='Veículos'>
-                  <icon>fa:car fa-fw</icon>
-                  <action>VeiculoList</action>
-              </menuitem>
-              <menuitem label='Documentos'>
-                  <icon>fa:files-o fa-fw</icon>
-                  <action>DocumentoList</action>
-              </menuitem>
-              <menuitem label='Vencimentos'>
-                  <icon>fa:calendar fa-fw</icon>
-                  <action>VencimentoGridView</action>
-              </menuitem>
-        </menu>
+    <menuitem label='Meus Interesses'>
+        <icon>fa:dashboard fa-fw</icon>
+        <action>Interesses</action>
+    </menuitem>
+    <menuitem label='Configurações da Conta'>
+        <icon>fa:dashboard fa-fw</icon>
+        <action>Config</action>
+    </menuitem>
+    <menuitem label='Pessoas em Comum'>
+        <icon>fa:dashboard fa-fw</icon>
+        <action>Pessoas</action>
+    </menuitem>
+    <menuitem label='Logout'>
+        <icon>fa:dashboard fa-fw</icon>
+        <action>LoginForm#method=onLogout#static=1</action>
+    </menuitem>
+    <menuitem label='Ações'>
+      <icon>fa:suitcase fa-fw</icon>
+      <menu>
+          <menuitem label='Comprar'>
+              <icon>fa:dashboard fa-fw</icon>
+              <action>OptionScreen</action>
+          </menuitem>
+      </menu>
     </menuitem>
     <menuitem label='Administração'>
         <icon>fa:university fa-fw</icon>
@@ -58,7 +53,6 @@
               </menuitem>
         </menu>
     </menuitem>
-    
     <menuitem label='Logs'>
         <icon>fa:desktop fa-fw</icon>
         <menu>
@@ -91,20 +85,6 @@
                 <icon></icon>
                 <action>CommonPage</action>
             </menuitem>
-        </menu>
-    </menuitem>
-    
-    <menuitem label='Logout'>
-        <menu>
-              <menuitem label='Profile'>
-                  <icon></icon>
-                  <action>SystemProfileView</action>
-              </menuitem>
-              
-              <menuitem label='Logout'>
-                  <action>LoginForm#method=onLogout#static=1</action>
-                  <icon>fa:sign-out fa-fw</icon>
-              </menuitem>
         </menu>
     </menuitem>
 </menu>

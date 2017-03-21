@@ -18,23 +18,14 @@ class OptionScreen extends TPage
     function __construct()
     {
         parent::__construct();
-        
+ 
+        require_once('app/templates/theme1/libraries.html');
+
         //TPage::include_css('app/resources/styles.css');
         $html1 = new THtmlRenderer('app/resources/views/option-screen.html');
-        //$html2 = new THtmlRenderer('app/resources/bemvindo.html');
-
+        
         // replace the main section variables
         $html1->enableSection('main', array());
         $html1->show();
-        //$html2->enableSection('main', array());
-        
-        //$panel1 = new TPanelGroup('Welcome!');
-        //$panel1->add($html1);
-        
-        //$panel2 = new TPanelGroup('Bem-vindo!');
-        //$panel2->add($html2);
-        
-        // add the template to the page
-        //parent::add( TVBox::pack($panel1, $panel2) );
     }
 }

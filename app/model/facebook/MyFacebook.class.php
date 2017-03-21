@@ -106,7 +106,7 @@ class MyFacebook
 	    return $likes;
 	}
 
-	public function isLoged()
+	public static function isLoged()
 	{
 		return TSession::getValue('logged') && TSession::getValue('fb-accesToken');
 	}

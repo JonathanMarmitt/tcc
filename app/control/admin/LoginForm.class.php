@@ -22,6 +22,11 @@ class LoginForm extends TPage
         $this->form->class = 'tform';
         $this->form->style = 'max-width: 450px; margin:auto; margin-top:120px;';
 
+        $intro = new TElement('span');
+        $intro->add('Bem vindo a ferramenta que irá te fazer economizar com o frete. Como? Simples! Compras conjuntas!');
+
+        $this->form->add($intro);
+
         // add the notebook inside the form
         $this->form->add($table);
 
@@ -58,14 +63,15 @@ class LoginForm extends TPage
         //$row->addCell($container1)->colspan = 2;
 
         // add a row for the field password
-        //$row=$table->addRow();        
+        //$row=$table->addRow();
         //$row->addCell($container2)->colspan = 2;
         
-        // create an action button (save)
+
+
         $save_button=new TButton('save');
         // define the button action
-        $save_button->setAction(new TAction(array($this, 'onLoginFacebook')), 'Login Com Facebook');
-        $save_button->class = 'btn btn-success';
+        $save_button->setAction(new TAction(array($this, 'onLoginFacebook')), 'Continue Com Facebook');
+        $save_button->class = 'btn btn-primary';
         $save_button->style = 'font-size:18px;width:90%;padding:10px';
 
         $row=$table->addRow();
