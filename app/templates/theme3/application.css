@@ -110,7 +110,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 }
 
 span.tdate-group-addon, span.input-group-addon.tcolor {
-  height: 28px !important;
+  height: 28px;/* !important;*/
   border-radius:0 !important;
 }
 

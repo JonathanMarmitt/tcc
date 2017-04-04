@@ -39,7 +39,7 @@ class MyFacebook
 		    return false;
 		}
 
-		TSession::setValue('fb-accesToken', $accessToken);
+		TSession::setValue('fb-accessToken', $accessToken);
 
 		return $accessToken;
 	}
@@ -69,10 +69,13 @@ class MyFacebook
 		return $me['id'];
 	}
 
-	public function userLikes($accessToken, $userID)
+	public function userLikes($accessToken, $userID = null)
 	{
 		try
 	    {
+	        if(!$userID)
+	        	$userID = $this->getMyId(TSession::getValue('fb-accessToken'));
+
 	        $response = $this->fb->get("/{$userID}/likes", $accessToken);
 	    }
 	    catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -89,7 +92,7 @@ class MyFacebook
 	    {
 	        try
 	        {
-	            $r = $this->fb->get("/".$page['id']."?fields=id,name,category", $accessToken);
+	            $r = $this->fb->get("/".$page['id']."?fields=id,name,category,picture", $accessToken);
 	        }
 	        catch(Facebook\Exceptions\FacebookResponseException $e) {
 	            new TMessage('error', 'Graph returned an error: ' . $e->getMessage());
@@ -108,6 +111,6 @@ class MyFacebook
 
 	public static function isLoged()
 	{
-		return TSession::getValue('logged') && TSession::getValue('fb-accesToken');
+		return TSession::getValue('logged') && TSession::getValue('fb-accessToken');
 	}
 }

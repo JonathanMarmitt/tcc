@@ -66,8 +66,6 @@ class LoginForm extends TPage
         //$row=$table->addRow();
         //$row->addCell($container2)->colspan = 2;
         
-
-
         $save_button=new TButton('save');
         // define the button action
         $save_button->setAction(new TAction(array($this, 'onLoginFacebook')), 'Continue Com Facebook');

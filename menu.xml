@@ -5,7 +5,7 @@
     </menuitem>
     <menuitem label='Meus Interesses'>
         <icon>fa:dashboard fa-fw</icon>
-        <action>Interesses</action>
+        <action>InteressesForm</action>
     </menuitem>
     <menuitem label='Configurações da Conta'>
         <icon>fa:dashboard fa-fw</icon>

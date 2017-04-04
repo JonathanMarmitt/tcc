@@ -19,3 +19,61 @@
 		height: 60px;
 	}
 }
+
+/*InteresseBuy -> view*/
+.interests
+{
+	font-size: 10px;
+	float: left;
+}
+
+.interest
+{
+	float: left;
+	width: 50%;
+}
+
+/*BuyForm*/
+.form_field
+{
+	height: 50px !important;
+	font-size: 20px !important;
+	margin-bottom: 30px !important;
+	border-radius: 5px !important;
+}
+
+.form_field_invalid
+{
+	border: #FF0000 2px solid !important;
+}
+
+.form_field_full
+{
+	width: 100% !important;
+}
+
+.form_label
+{
+	width: 100%;
+	color: grey;
+	margin-bottom: 0px !important;
+	padding-left: 3px !important;
+	font-style: italic;
+}
+
+/*Default components*/
+.tdate-group-addon
+{
+	width: 50px !important;
+	height: 50px !important;
+}
+
+.glyphicon
+{
+	font-size: 40px;
+}
+
+.ui-slider
+{
+	margin-bottom: 30px !important;
+}
