@@ -3,9 +3,9 @@
  * System_user Active Record
  * @author  Jonathan Marmitt
  */
-class Status extends TRecord
+class Store extends TRecord
 {
-    const TABLENAME = 'status';
+    const TABLENAME = 'store';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'serial'; // {max, serial}
 
@@ -16,6 +16,7 @@ class Status extends TRecord
     {
         parent::__construct($id);
         parent::addAttribute('description');
+        parent::addAttribute('date_creation');
     }
 }
 ?>

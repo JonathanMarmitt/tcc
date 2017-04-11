@@ -26,6 +26,10 @@
               <icon>fa:dashboard fa-fw</icon>
               <action>OptionScreen</action>
           </menuitem>
+          <menuitem label='Minhas Compras'>
+              <icon>fa:dashboard fa-fw</icon>
+              <action>MyBoughts</action>
+          </menuitem>
       </menu>
     </menuitem>
     <menuitem label='Administração'>

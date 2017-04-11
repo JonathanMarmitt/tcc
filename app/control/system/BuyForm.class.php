@@ -29,13 +29,41 @@ class BuyForm extends TPage
         $this->form->add($intro);
         $this->form->add($table);
 
-        $store = new TEntry('store_id');
-        $store->class = 'form_field form_field_full';
-        $store_label = new TLabel('Loja');
-        $store_label->class = 'form_label';
+        $option_hidden = new THidden('option_hidden');
+        $option_hidden->id = 'option_hidden';
+
+        $interest = "";
+        if(isset($_GET['s']))
+        {
+            $option = new TEntry('store_id');
+            
+            $option->placeholder = 'Store';
+            $option_label = new TLabel('Loja');
+        }
+        else if(isset($_GET['i']))
+        {
+            $option = new TEntry('interest');
+            $option->style = "padding-left: 55px; background-color: #e0e0e0";
+            $option->readonly = '1';
+            $option_label = new TLabel('Interesse');
+
+            $interest = new TElement('span');
+            $interest->class = 'input-group-addon';
+            $interest->style = "float:left;width:50px;height:50px;position:absolute;padding:0; cursor: pointer;";
+            $interest->add("<span class='glyphicon glyphicon-heart'></span>");
+            $interest->onclick = "Adianti.waitMessage = 'Aguarde';
+                                  __adianti_post_data('form_login', 'class=BuyForm&method=onInterest&static=1');
+                                  return false;";
+        }
+
+        $option->class = 'form_field form_field_full';
+        $option->id = 'option';
+        $option_label->class = 'form_label';
 
         $people = new TEntry('people_id');
         $people->class = 'form_field form_field_full';
+        $people->style = 'background-color: #e0e0e0';
+        $people->readonly = '1';
         $people_label = new TLabel('Usuário');
         $people_label->class = 'form_label';
         
@@ -69,18 +97,17 @@ class BuyForm extends TPage
 
         //$row=$table->addRow();
         //$row->addCell( new TLabel('Compra') )->colspan = 2;
-        //$row->class='tformtitle';
-
-        $store->placeholder = 'Store';
+        //$row->class='tformtitle';        
 
         $people->setValue(TSession::getValue('username'));
 
-        //$user = '<span style="float:left;width:35px;margin-left:45px;height:35px;" class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>';
         //$locker = '<span style="float:left;width:35px;margin-left:45px;height:35px;" class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>';
 
         $container1 = new TElement('div');
-        $container1->add($store_label);
-        $container1->add($store);
+        $container1->add($option_hidden);
+        $container1->add($option_label);
+        $container1->add($interest);
+        $container1->add($option);
         $container1->add($people_label);
         $container1->add($people);
         $container1->add($date_label);
@@ -97,9 +124,11 @@ class BuyForm extends TPage
 
         $save_button=new TButton('save');
         // define the button action
-        $save_button->setAction(new TAction(array($this, 'onSave')), 'Salvar');
+        $save_button->setAction($action_save = new TAction(array($this, 'onSave')), 'Concluir');
         $save_button->class = 'btn btn-primary';
         $save_button->style = 'font-size:18px;width:90%;padding:10px';
+        $action_save->setParameter('s', isset($_GET['s']));
+        $action_save->setParameter('i', isset($_GET['i']));
 
         $row=$table->addRow();
         $row->class = 'tformaction';
@@ -107,7 +136,7 @@ class BuyForm extends TPage
         $cell->colspan = 2;
         $cell->style = 'text-align:center';
 
-        $this->form->setFields(array($store, $people, $date, $min_people, $max_people, $deposite, $save_button));
+        $this->form->setFields(array($option, $option_hidden, $people, $date, $min_people, $max_people, $deposite, $save_button));
 
         // add the form to the page
         parent::add($this->form);
@@ -118,6 +147,48 @@ class BuyForm extends TPage
         var_dump($params);
     }
 
+    public static function onInterest($param = null)
+    {
+        TTransaction::open('ship');
+
+        $people = new People(TSession::getValue('fb-id'));
+        $likes = $people->getLikesToList();
+        
+        $dialog = new TJQueryDialog;
+        $content = new TElement('div');
+        if ($likes)
+        {
+            //$table->clearChildren();
+            foreach ($likes as $like)
+            {
+                //$chk = new TCheckButton('chk_'.$like->id);
+                //$chk->setValue(!$like->fl_list); //pq eu ja nao sei.. o componente inverte sozinho
+
+                //$row = $table->addRow();
+                //$row->style = 'border: 1px; border-radius = 5px;';
+                //$row->addCell($chk);
+                //$row->addCell($like->page_name);
+                $div = new TElement('div');
+                $div->add($like->page_name);
+                $div->class = 'btn btn-primary';
+                $div->style = 'margin: 2px;';
+                $div->onclick = "setInterest('{$like->id}','{$like->page_name}','{$dialog->id}')";
+                $content->add($div);
+            }
+        }
+
+        $dialog->setUseOKButton(FALSE);
+        $dialog->setTitle('Escolha o interesse');
+        $dialog->setSize(0.8, 0.8);
+        $dialog->setModal(TRUE);
+        $dialog->{'widget'} = 'T'.'Window';
+        //$dialog->add($table);
+        $dialog->add($content);
+        $dialog->show();
+
+        TTransaction::close();
+    }
+
     /**
      * Autenticates the User
      */
@@ -125,14 +196,19 @@ class BuyForm extends TPage
     {
         try
         {
+            $maps = new Maps;
+            $location = $maps->getGeolocation();
+
             $data = $this->form->getData('Purshase');
 
             $this->form->setData($data);
 
+            $non_mandatory = ['store_id', 'option_hidden'];
+
             $ok = true;
             foreach($data->toArray() as $form_field => $value)
             {
-                if(!$value)
+                if(!$value && !in_array($form_field, $non_mandatory))
                 {
                     $field = $this->form->getField($form_field);
                     $field->class .= ' form_field_invalid';
@@ -142,6 +218,8 @@ class BuyForm extends TPage
                 }
             }
 
+            //FIXME: fazer ou store_id ou option_hidden obrigatorios
+
             if($ok)
             {
                 TTransaction::open('ship');
@@ -149,6 +227,8 @@ class BuyForm extends TPage
                 $data->date_until = date('Y-m-d', strtotime($data->date_until));
                 $data->people_id = TSession::getValue('fb-id');
                 $data->status_id = 1; //FIXME: hardcode
+                $data->like_id    = $data->option_hidden;
+                $data->maps_address = json_encode($location);
 
                 $data->store();
 

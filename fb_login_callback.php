@@ -46,7 +46,8 @@ if(isset($accessToken))
                  'InteressesForm'=>'Meus Interesses',
                  'Config'    =>'Configurações da Conta',
                  'Pessoas'   =>'Pessoas em Comum',
-                 'OptionScreen' => 'Comprar'];
+                 'OptionScreen' => 'Comprar',
+                 'MyBoughts' => 'Minhas Compras'];
 
     $programs['LoginForm'] = TRUE;
     

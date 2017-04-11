@@ -36,7 +36,8 @@ CREATE TABLE status(
 
 CREATE TABLE purshase(
 	id serial not null primary key,
-	store_id int not null,
+	store_id int,
+	like_id bigint,
 	people_id bigint not null,
 	status_id int not null,
 	min_people int not null,
@@ -46,6 +47,7 @@ CREATE TABLE purshase(
 	track_link TEXT,
 	maps_address TEXT,
 	foreign key(store_id) references store(id),
+	foreign key(like_id) references people_like(id),
 	foreign key(people_id) references people(id),
 	foreign key(status_id) references status(id)	
 );
