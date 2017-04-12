@@ -22,8 +22,23 @@ class StoreBuy extends TPage
         require_once('app/templates/theme1/libraries.html');
         TTransaction::open('ship');
         
+        $maps = new Maps();
+        $maps->setSize('400px', '100%');
+
         $store_id = $_GET['store_id'];
 
+        $current_purshases = Purshase::getCurrentByStore($store_id);
+
+        if($current_purshases)
+        {
+            foreach($current_purshases as $purshase)
+            {
+                $location = json_decode($purshase->getLocation());
+
+                if($location)
+                    $maps->addMark($location->location->lat, $location->location->lng, 'Compra aqui!');
+            }
+        }
         //TPage::include_css('app/resources/styles.css');
         /*$html1 = new THtmlRenderer('app/resources/views/store-buy.html');
         
@@ -32,7 +47,7 @@ class StoreBuy extends TPage
         $html1->enableSection('main', array());
         $html1->show();*/
 
-        $maps = new Maps();
+        
         $maps->show();
 
         TTransaction::close();

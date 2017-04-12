@@ -14,6 +14,9 @@ class Maps
 	## marks
 	private $marks;
 
+	public $height;
+	public $width;
+
 	function __construct()
 	{
 		$geolocation = $this->getGeolocation();
@@ -22,7 +25,18 @@ class Maps
 		$this->lng = $geolocation->location->lng;
 		$this->accuracy = $geolocation->accuracy;
 
-		$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
+		//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
+
+		$this->width = '800px';
+		$this->height = '400px';
+
+		$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
+	}
+
+	public function setSize($height, $width)
+	{
+		$this->height = $height;
+		$this->width = $width;
 	}
 
 	public function addMark($lat, $lng, $title)
@@ -85,21 +99,21 @@ HTML;
 		      		});
 
 HTML;
-				foreach($this->marks as $mark)
+				if($this->marks)
 				{
-					$script .= <<<HTML
-					var marker = new google.maps.Marker({
-						map: map,
-						position : {lat: $mark->lat, lng: $mark->lng},
-						title: "$mark->title",
-						opacity: 0.7,
-
-					});
-					marker.addListener('click', function() {
-					    console.log('CLICOU!')
-					});
+					foreach($this->marks as $mark)
+					{
+						$script .= <<<HTML
+						var marker = new google.maps.Marker({
+							map: map,
+							position : {lat: $mark->lat, lng: $mark->lng},
+							title: "$mark->title",
+							opacity: 0.7,
+						});
+						marker.addListener('click', markerClicked);
 
 HTML;
+					}
 				}
 
 		$script .= <<<HTML
@@ -118,11 +132,12 @@ HTML;
 
 		$replaces = array();
 		// trocar tamanho pq vai ser responsivo, add no css
-		$replaces['height'] = '400px';
-		$replaces['width'] = '800px';
+		$replaces['height'] = $this->height;
+		$replaces['width'] = $this->width;
+		$replaces['lat'] = $this->lat;
+		$replaces['lng'] = $this->lng;
 
-		$html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
-        $html_maps->enableSection('main', $replaces);
-        $html_maps->show();
+        $this->html_maps->enableSection('main', $replaces);
+        $this->html_maps->show();
 	}
 }

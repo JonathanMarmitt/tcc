@@ -35,6 +35,10 @@
     <menuitem label='Administração'>
         <icon>fa:university fa-fw</icon>
         <menu>
+              <menuitem label='Stores'>
+                  <icon>fa:code fa-fw</icon>
+                  <action>StoreFormList</action>
+              </menuitem>
               <menuitem label='Programas'>
                   <icon>fa:file-code-o fa-fw</icon>
                   <action>SystemProgramList</action>

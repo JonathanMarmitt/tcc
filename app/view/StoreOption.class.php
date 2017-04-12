@@ -27,10 +27,8 @@ class StoreOption extends TPage
         {
             $s[] = array('store_id'    => $store->id, 
                          'description' => $store->description,
-                         'store_img'   => "http://www.caminhosdoemprego.com/wp-content/uploads/2016/06/philips-3-700x200.jpg");
+                         'store_img'   => "app/store_banner/".$store->id);
         }
-
-        $s[1]['store_img'] = 'https://cdn.picodi.com/br/files/img/submarinologo.jpg';
 
         //TPage::include_css('app/resources/styles.css');
         $html1 = new THtmlRenderer('app/resources/views/store-option.html');

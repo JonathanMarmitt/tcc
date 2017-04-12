@@ -4,3 +4,8 @@ function setInterest(like_id, like_description, dialog_id)
 	$('#option').val(like_description)
 	$('#'+dialog_id).dialog('close')
 }
+
+function markerClicked(e)
+{
+	console.log('asdasd');
+}

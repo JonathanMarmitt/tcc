@@ -26,6 +26,7 @@ CREATE TABLE people_like(
 CREATE TABLE store(
 	id serial not null primary key,
 	description text not null,
+	link text not null,
 	date_creation date default date(now())
 );
 

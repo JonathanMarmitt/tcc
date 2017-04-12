@@ -32,7 +32,7 @@ class Purshase extends TRecord
         $this->status_id = 2; //FIXME
     }
 
-    public function getCurrent()
+    public function getCurrentPeople()
     {
         return 2;
     }
@@ -47,6 +47,26 @@ class Purshase extends TRecord
             return 'red';
         else
             throw new Exception('Erro ao buscar cor!');
+    }
+
+    public function getLocation()
+    {
+        if(!$this->maps_address)
+        {
+            $people = new People($this->people_id);
+
+            return $people->maps_address;
+        }
+        else
+            return $this->maps_address;
+    }
+
+    public static function getCurrentByStore($store_id)
+    {
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('store_id','=',$store_id));
+
+        return self::getObjects($criteria);
     }
 }
 ?>

@@ -16,6 +16,7 @@ class Store extends TRecord
     {
         parent::__construct($id);
         parent::addAttribute('description');
+        parent::addAttribute('link');
         parent::addAttribute('date_creation');
     }
 }

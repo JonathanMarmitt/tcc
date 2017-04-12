@@ -215,7 +215,7 @@ class MyBoughts extends TPage
                     }
                     $status = new Status($object->status_id);
 
-                    $current = $object->getCurrent();
+                    $current = $object->getCurrentPeople();
 
                     $object->option = $option->description;
                     $object->status_id = $status->description;
