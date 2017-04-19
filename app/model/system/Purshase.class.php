@@ -9,6 +9,8 @@ class Purshase extends TRecord
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'serial'; // {max, serial}
 
+    private $purshasesWith;
+
     /**
      * Constructor method
      */
@@ -32,9 +34,19 @@ class Purshase extends TRecord
         $this->status_id = 2; //FIXME
     }
 
+    public function loadPurshaseWith()
+    {
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('purshase_id','=',$this->id));
+
+        $this->purshasesWith = PurshaseWith::getObjects($criteria);
+    }
+
     public function getCurrentPeople()
     {
-        return 2;
+        $this->loadPurshaseWith();
+
+        return count($this->purshasesWith);
     }
 
     public function getColor($current)
@@ -61,12 +73,47 @@ class Purshase extends TRecord
             return $this->maps_address;
     }
 
-    public static function getCurrentByStore($store_id)
+    public static function getCurrentByStore($store_id, $people_id = null)
     {
         $criteria = new TCriteria;
         $criteria->add(new TFilter('store_id','=',$store_id));
+        if($people_id)
+            $criteria->add(new TFilter('people_id','<>',$people_id));
 
         return self::getObjects($criteria);
+    }
+
+    public function addPeople($people_id)
+    {
+        $this->loadPurshaseWith();
+
+        if($this->max_people < count($this->purshasesWith))
+            throw new Exception("Esta compra já atingiu o nº máximo de pessoas!");
+
+        if($this->date_until < date('Y-m-d'))
+            throw new Exception("Esta compra já não é mais válida!");
+
+        $purshase_with = new PurshaseWith();
+        $purshase_with->purshase_id = $this->id;
+        $purshase_with->people_id = $people_id;
+        $purshase_with->product_link = "FIXME";
+        $purshase_with->price = 299.95;
+
+        if($purshase_with->store())
+            return true;
+        else
+            new TMessage('error', 'Erro ao adicionar pessoa');
+    }
+
+    public function hasPeople($people_id)
+    {
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('people_id','=',$people_id));
+        $criteria->add(new TFilter('purshase_id','=',$this->id));
+
+        $objs = PurshaseWith::getObjects($criteria);
+
+        return $objs ? $objs[0] : null;
     }
 }
 ?>

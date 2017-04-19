@@ -224,7 +224,7 @@ class BuyForm extends TPage
             {
                 TTransaction::open('ship');
 
-                $data->date_until = date('Y-m-d', strtotime($data->date_until));
+                $data->date_until = TDate::date2us($data->date_until);
                 $data->people_id = TSession::getValue('fb-id');
                 $data->status_id = 1; //FIXME: hardcode
                 $data->like_id    = $data->option_hidden;

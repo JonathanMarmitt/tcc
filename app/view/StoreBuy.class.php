@@ -27,16 +27,18 @@ class StoreBuy extends TPage
 
         $store_id = $_GET['store_id'];
 
-        $current_purshases = Purshase::getCurrentByStore($store_id);
+        $current_purshases = Purshase::getCurrentByStore($store_id, TSession::getValue('fb-id'));
 
         if($current_purshases)
         {
             foreach($current_purshases as $purshase)
             {
+                $people = new People($purshase->people_id);
+
                 $location = json_decode($purshase->getLocation());
 
                 if($location)
-                    $maps->addMark($location->location->lat, $location->location->lng, 'Compra aqui!');
+                    $maps->addMark($location->location->lat, $location->location->lng, $purshase->id);
             }
         }
         //TPage::include_css('app/resources/styles.css');

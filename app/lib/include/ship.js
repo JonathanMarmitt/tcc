@@ -5,7 +5,12 @@ function setInterest(like_id, like_description, dialog_id)
 	$('#'+dialog_id).dialog('close')
 }
 
-function markerClicked(e)
+function onPurshase(purshase_id)
 {
-	console.log('asdasd');
+	__adianti_ajax_exec('class=PurshaseControl&method=onPurshase&purshase_id='+purshase_id,'alert',true)
+}
+
+function onCancelPurshase(purshase_id)
+{
+	__adianti_ajax_exec('class=PurshaseControl&method=onCancelPurshase&purshase_id='+purshase_id,'alert',true)
 }

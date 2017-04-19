@@ -39,12 +39,19 @@ class Maps
 		$this->width = $width;
 	}
 
-	public function addMark($lat, $lng, $title)
+	public function addMark($lat, $lng, $purshase_id)
 	{
+		##FIXME: remover essa logica daqui?
+		$purshase = new Purshase($purshase_id);
+		$store = new Store($purshase->store_id);
+		$people = new People($purshase->people_id);
+
 		$m = new stdClass;
 		$m->lat = $lat;
 		$m->lng = $lng;
-		$m->title = $title;
+		$m->people = $people;
+		$m->store = $store;
+		$m->purshase = $purshase;
 		$this->marks[] = $m;
 	}
 
@@ -78,6 +85,29 @@ class Maps
 		}
 	}
 
+	private function getInfoWindowHtml($purshase, $people, $store)
+	{
+		$date_until = TDate::date2br($purshase->date_until);
+
+		$html = <<<HTML
+			<div><b>Comprador</b>: $people->people_name</div>
+			<div><b>Loja</b>: $store->description</div>
+			<div><b>Disponível até</b>: $date_until</div>
+			<hr>
+			<div>
+HTML;
+		if($purshase_with = $purshase->hasPeople(TSession::getValue('fb-id')))
+			$html .= "<button class='btn btn-warning' onclick='onCancelPurshase({$purshase->id})'>Cancelar</button>";
+		else
+			$html .= "<button class='btn btn-success' onclick='onPurshase({$purshase->id})'>Participar</button>";
+
+		$html .= <<<HTML
+			</div>
+HTML;
+	
+		return str_replace("\n", "", $html);
+	}
+
 	private function scripts()
 	{
 		$script = <<<HTML
@@ -103,14 +133,20 @@ HTML;
 				{
 					foreach($this->marks as $mark)
 					{
+						$html = $this->getInfoWindowHtml($mark->purshase, $mark->people, $mark->store);
+
 						$script .= <<<HTML
 						var marker = new google.maps.Marker({
 							map: map,
 							position : {lat: $mark->lat, lng: $mark->lng},
-							title: "$mark->title",
-							opacity: 0.7,
+							opacity: 0.7
 						});
-						marker.addListener('click', markerClicked);
+						var infowindow = new google.maps.InfoWindow({
+					    	content: "{$html}"
+					  	});
+						marker.addListener('click', function (){
+							infowindow.open(map, marker);
+						})
 
 HTML;
 					}
