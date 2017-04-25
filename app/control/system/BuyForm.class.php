@@ -197,7 +197,7 @@ class BuyForm extends TPage
         try
         {
             $maps = new Maps;
-            $location = $maps->getGeolocation();
+            //$location = $maps->getGeolocation();
 
             $data = $this->form->getData('Purshase');
 
@@ -228,7 +228,7 @@ class BuyForm extends TPage
                 $data->people_id = TSession::getValue('fb-id');
                 $data->status_id = 1; //FIXME: hardcode
                 $data->like_id    = $data->option_hidden;
-                $data->maps_address = json_encode($location);
+                //$data->maps_address = json_encode($location);
 
                 $data->store();
 

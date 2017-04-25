@@ -19,15 +19,15 @@ class Maps
 
 	function __construct()
 	{
-		$geolocation = $this->getGeolocation();
+		$location = Geolocation::getLocation();
 
-		$this->lat = $geolocation->location->lat;
-		$this->lng = $geolocation->location->lng;
-		$this->accuracy = $geolocation->accuracy;
+		$this->lat = $location->lat;
+		$this->lng = $location->lng;
+		$this->accuracy = $location->acu;
 
 		//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
 
-		$this->width = '800px';
+		//$this->width = '800px';
 		$this->height = '400px';
 
 		$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
@@ -39,23 +39,41 @@ class Maps
 		$this->width = $width;
 	}
 
-	public function addMark($lat, $lng, $purshase_id)
+	public function addMarkYouAreHere()
 	{
-		##FIXME: remover essa logica daqui?
-		$purshase = new Purshase($purshase_id);
-		$store = new Store($purshase->store_id);
-		$people = new People($purshase->people_id);
+		$this->addMark($this->lat, $this->lng, null, "Tu mesmo bixo!");
+	}
 
+	public function addMark($lat, $lng, $purshase_id = null, $description = null)
+	{
 		$m = new stdClass;
 		$m->lat = $lat;
 		$m->lng = $lng;
-		$m->people = $people;
-		$m->store = $store;
-		$m->purshase = $purshase;
+
+		if($purshase_id)
+		{	
+			##FIXME: remover essa logica daqui?
+			$purshase = new Purshase($purshase_id);
+			$store = new Store($purshase->store_id);
+			$people = new People($purshase->people_id);
+
+			$m->people = $people;
+			$m->store = $store;
+			$m->purshase = $purshase;
+			$m->description = "";
+		}
+		else if($description)
+		{
+			$m->people = null;
+			$m->store = null;
+			$m->purshase = null;
+			$m->description = $description;
+		}
+
 		$this->marks[] = $m;
 	}
 
-	public function getGeolocation()
+	/*public function getGeolocation()
 	{
 		try
 		{
@@ -77,33 +95,44 @@ class Maps
 			curl_close($c);
 
 			return json_decode($result);
+
+
 		}
 		catch(Exception $e)
 		{
 			new TMessage('error', $e->getMessage());
 			return false;
 		}
-	}
+	}*/
 
-	private function getInfoWindowHtml($purshase, $people, $store)
-	{
-		$date_until = TDate::date2br($purshase->date_until);
+	private function getInfoWindowHtml($purshase = null, $people = null, $store = null, $description = null)
+	{	
+		if($purshase)
+		{
+			$date_until = TDate::date2br($purshase->date_until);
 
-		$html = <<<HTML
-			<div><b>Comprador</b>: $people->people_name</div>
-			<div><b>Loja</b>: $store->description</div>
-			<div><b>Disponível até</b>: $date_until</div>
-			<hr>
-			<div>
+			$html = <<<HTML
+				<div><b>Comprador</b>: $people->name</div>
+				<div><b>Loja</b>: $store->description</div>
+				<div><b>Disponível até</b>: $date_until</div>
+				<hr>
+				<div>
 HTML;
-		if($purshase_with = $purshase->hasPeople(TSession::getValue('fb-id')))
-			$html .= "<button class='btn btn-warning' onclick='onCancelPurshase({$purshase->id})'>Cancelar</button>";
-		else
-			$html .= "<button class='btn btn-success' onclick='onPurshase({$purshase->id})'>Participar</button>";
+			if($purshase_with = $purshase->hasPeople(TSession::getValue('fb-id')))
+				$html .= "<button class='btn btn-warning' onclick='onCancelPurshase({$purshase->id})'>Cancelar</button>";
+			else
+				$html .= "<button class='btn btn-success' onclick='onPurshase({$purshase->id})'>Participar</button>";
 
-		$html .= <<<HTML
-			</div>
+			$html .= <<<HTML
+				</div>
 HTML;
+		}
+		else if($description)
+		{
+			$html = <<<HTML
+			<div>Você está aqui!</div>
+HTML;
+		}
 	
 		return str_replace("\n", "", $html);
 	}
@@ -133,7 +162,7 @@ HTML;
 				{
 					foreach($this->marks as $mark)
 					{
-						$html = $this->getInfoWindowHtml($mark->purshase, $mark->people, $mark->store);
+						$html = $this->getInfoWindowHtml($mark->purshase, $mark->people, $mark->store, $mark->description);
 
 						$script .= <<<HTML
 						var marker = new google.maps.Marker({
@@ -141,13 +170,16 @@ HTML;
 							position : {lat: $mark->lat, lng: $mark->lng},
 							opacity: 0.7
 						});
-						var infowindow = new google.maps.InfoWindow({
-					    	content: "{$html}"
-					  	});
-						marker.addListener('click', function (){
-							infowindow.open(map, marker);
-						})
-
+						
+						var infowindow = new google.maps.InfoWindow()
+						var content = "{$html}"
+						
+						google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+						    return function() {
+						        infowindow.setContent(content);
+						        infowindow.open(map,marker);
+						    };
+						})(marker,content,infowindow));
 HTML;
 					}
 				}
@@ -162,6 +194,7 @@ HTML;
 
 	function show()
 	{
+		$this->addMarkYouAreHere();
 		echo $this->scripts();
 
 		//$this->getGeolocation();
@@ -169,7 +202,7 @@ HTML;
 		$replaces = array();
 		// trocar tamanho pq vai ser responsivo, add no css
 		$replaces['height'] = $this->height;
-		$replaces['width'] = $this->width;
+		//$replaces['width'] = $this->width;
 		$replaces['lat'] = $this->lat;
 		$replaces['lng'] = $this->lng;
 

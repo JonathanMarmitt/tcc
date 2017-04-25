@@ -21,7 +21,12 @@ class StoreOption extends TPage
  
         require_once('app/templates/theme1/libraries.html');
         TTransaction::open('ship');
-        $stores = Store::getObjects();
+
+        $criteria = new TCriteria;
+        $criteria->setProperty('order','id');
+        $criteria->setProperty('direction','asc');
+
+        $stores = Store::getObjects($criteria);
 
         foreach($stores as $store)
         {

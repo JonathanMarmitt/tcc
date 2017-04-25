@@ -115,5 +115,12 @@ class Purshase extends TRecord
 
         return $objs ? $objs[0] : null;
     }
+
+    public function store()
+    {
+        $this->maps_address = json_encode(Geolocation::getLocation());
+
+        return parent::store();
+    }
 }
 ?>

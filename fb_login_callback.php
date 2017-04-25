@@ -58,6 +58,8 @@ if(isset($accessToken))
     TSession::setValue('frontpage', '');
     TSession::setValue('programs',$programs);
     
+    TScript::create("setGeolocation();");
+
     //$frontpage = $user->frontpage;
     TScript::create("location.href = 'index.php?class=OptionScreen'");
     

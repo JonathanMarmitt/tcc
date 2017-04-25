@@ -23,7 +23,7 @@ class StoreBuy extends TPage
         TTransaction::open('ship');
         
         $maps = new Maps();
-        $maps->setSize('400px', '100%');
+        //$maps->setSize('400px', '100%');
 
         $store_id = $_GET['store_id'];
 
@@ -33,12 +33,12 @@ class StoreBuy extends TPage
         {
             foreach($current_purshases as $purshase)
             {
-                $people = new People($purshase->people_id);
+                //$people = new People($purshase->people_id);
 
                 $location = json_decode($purshase->getLocation());
 
                 if($location)
-                    $maps->addMark($location->location->lat, $location->location->lng, $purshase->id);
+                    $maps->addMark($location->lat, $location->lng, $purshase->id);
             }
         }
         //TPage::include_css('app/resources/styles.css');
@@ -48,7 +48,6 @@ class StoreBuy extends TPage
         $html1->enableSection('stores', $s, true);
         $html1->enableSection('main', array());
         $html1->show();*/
-
         
         $maps->show();
 
