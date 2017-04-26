@@ -15,9 +15,14 @@
         <icon>fa:dashboard fa-fw</icon>
         <action>Pessoas</action>
     </menuitem>
-    <menuitem label='Logout'>
-        <icon>fa:dashboard fa-fw</icon>
-        <action>LoginForm#method=onLogout#static=1</action>
+    <menuitem label='Sair'>
+        <icon>fa:sign-out fa-fw</icon>
+        <menu>
+            <menuitem label="Logout">
+                <icon>fa:sign-out fa-fw</icon>
+                <action>LoginForm#method=onLogout#static=1</action>
+            </menuitem>
+        </menu>
     </menuitem>
     <menuitem label='Ações'>
       <icon>fa:suitcase fa-fw</icon>

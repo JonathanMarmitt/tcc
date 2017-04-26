@@ -12,6 +12,9 @@ class Geolocation
 
 	public static function getLocation()
 	{
+		if(!TSession::getValue('lat') || !TSession::getValue('lng'))
+			throw new Exception("Posição atual indefinida!");
+
 		$g = new stdClass;
 		$g->lat = TSession::getValue('lat');
 		$g->lng = TSession::getValue('lng');

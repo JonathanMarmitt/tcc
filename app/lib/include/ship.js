@@ -67,3 +67,18 @@ function showDivLocation()
 {
 	alert('Mostrar div de pedir permissao para geolocation')
 }
+
+function changemaps(field)
+{
+	console.log($(field).val());
+
+	//reloading maps
+}
+
+function calcDistance(lat1,lng1,lat2,lng2)
+{
+	coordA = new google.maps.LatLng(lat1, lng1);
+    coordB = new google.maps.LatLng(lat2, lng2);
+
+    return google.maps.geometry.spherical.computeDistanceBetween(coordA, coordB);
+}

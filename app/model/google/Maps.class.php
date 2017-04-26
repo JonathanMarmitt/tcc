@@ -17,20 +17,25 @@ class Maps
 	public $height;
 	public $width;
 
+	#limit
+	private $limit;
+
 	function __construct()
 	{
-		$location = Geolocation::getLocation();
+		
+			$location = Geolocation::getLocation();
 
-		$this->lat = $location->lat;
-		$this->lng = $location->lng;
-		$this->accuracy = $location->acu;
+			$this->lat = $location->lat;
+			$this->lng = $location->lng;
+			$this->accuracy = $location->acu;
 
-		//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
+			//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
 
-		//$this->width = '800px';
-		$this->height = '400px';
+			//$this->width = '800px';
+			$this->height = '400px';
 
-		$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
+			$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
+		
 	}
 
 	public function setSize($height, $width)
@@ -71,6 +76,11 @@ class Maps
 		}
 
 		$this->marks[] = $m;
+	}
+
+	public function setLimit($l)
+	{
+		$this->limit = $l;
 	}
 
 	/*public function getGeolocation()
@@ -129,8 +139,10 @@ HTML;
 		}
 		else if($description)
 		{
+			$precisao = TSession::getValue('acu');
 			$html = <<<HTML
-			<div>Você está aqui!</div>
+			<div>$description</div>
+			<div>Precisão: {$precisao} metros</div>
 HTML;
 		}
 	
@@ -141,7 +153,7 @@ HTML;
 	{
 		$script = <<<HTML
 		<script async defer
-          src='https://maps.googleapis.com/maps/api/js?key={$this->APIKEY}&callback=initMap'>
+          src='https://maps.googleapis.com/maps/api/js?key={$this->APIKEY}&callback=initMap&v=3&libraries=geometry'>
         </script>
 HTML;
 
@@ -155,7 +167,9 @@ HTML;
 			        	zoom: 15,
 			        	scrollwheel: false,
 			        	streetViewControl: false
-		      		});
+		      	});
+			    //deixando o infowindow aqui, apenas um é aberto no mapa, jogando ele dentro do for abre sempre um novo
+			    var infowindow = new google.maps.InfoWindow();
 
 HTML;
 				if($this->marks)
@@ -165,21 +179,27 @@ HTML;
 						$html = $this->getInfoWindowHtml($mark->purshase, $mark->people, $mark->store, $mark->description);
 
 						$script .= <<<HTML
-						var marker = new google.maps.Marker({
-							map: map,
-							position : {lat: $mark->lat, lng: $mark->lng},
-							opacity: 0.7
-						});
 						
-						var infowindow = new google.maps.InfoWindow()
-						var content = "{$html}"
-						
-						google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
-						    return function() {
-						        infowindow.setContent(content);
-						        infowindow.open(map,marker);
-						    };
-						})(marker,content,infowindow));
+						distance = calcDistance($this->lat,$this->lng,$mark->lat,$mark->lng);
+
+						if(distance < $this->limit)
+						{
+							var marker = new google.maps.Marker({
+								map: map,
+								position : {lat: $mark->lat, lng: $mark->lng},
+								opacity: 0.7
+							});
+											
+							var content = "{$html}"
+							content += "<div>Distancia:"+distance+"</div>"
+							
+							google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+							    return function() {
+							        infowindow.setContent(content);
+							        infowindow.open(map,marker);
+							    };
+							})(marker,content,infowindow));
+						}
 HTML;
 					}
 				}
@@ -195,9 +215,8 @@ HTML;
 	function show()
 	{
 		$this->addMarkYouAreHere();
-		echo $this->scripts();
 
-		//$this->getGeolocation();
+		echo $this->scripts();
 
 		$replaces = array();
 		// trocar tamanho pq vai ser responsivo, add no css

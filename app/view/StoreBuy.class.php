@@ -17,40 +17,56 @@ class StoreBuy extends TPage
      */
     function __construct()
     {
-        parent::__construct();
- 
-        require_once('app/templates/theme1/libraries.html');
-        TTransaction::open('ship');
-        
-        $maps = new Maps();
-        //$maps->setSize('400px', '100%');
-
-        $store_id = $_GET['store_id'];
-
-        $current_purshases = Purshase::getCurrentByStore($store_id, TSession::getValue('fb-id'));
-
-        if($current_purshases)
+        try
         {
-            foreach($current_purshases as $purshase)
+            parent::__construct();
+     
+            require_once('app/templates/theme1/libraries.html');
+            TTransaction::open('ship');
+            
+            //$slider = new TSlider('min_people');
+            //$slider->setRange(1000,5000,100);
+            //$slider->setSize('100%');
+            //$slider->onchange = "changemaps(this);";
+            //$slider->show();
+            $f = new TEntry('asd');
+            $f->onchange = "changemaps(this);";
+            $f->setValue(1700);
+            $f->show();
+
+            $maps = new Maps();
+            $maps->setLimit(1700);
+
+            $store_id = $_GET['store_id'];
+
+            $current_purshases = Purshase::getCurrentByStore($store_id, TSession::getValue('fb-id'));
+
+            if($current_purshases)
             {
-                //$people = new People($purshase->people_id);
+                foreach($current_purshases as $purshase)
+                {
+                    $location = json_decode($purshase->getLocation());
 
-                $location = json_decode($purshase->getLocation());
-
-                if($location)
-                    $maps->addMark($location->lat, $location->lng, $purshase->id);
+                    if($location)
+                        $maps->addMark($location->lat, $location->lng, $purshase->id);
+                }
             }
-        }
-        //TPage::include_css('app/resources/styles.css');
-        /*$html1 = new THtmlRenderer('app/resources/views/store-buy.html');
-        
-        // replace the main section variables
-        $html1->enableSection('stores', $s, true);
-        $html1->enableSection('main', array());
-        $html1->show();*/
-        
-        $maps->show();
+            //TPage::include_css('app/resources/styles.css');
+            /*$html1 = new THtmlRenderer('app/resources/views/store-buy.html');
+            
+            // replace the main section variables
+            $html1->enableSection('stores', $s, true);
+            $html1->enableSection('main', array());
+            $html1->show();*/
+            
+            $maps->show();
 
-        TTransaction::close();
+            TTransaction::close();
+        }
+        catch(Exception $e)
+        {
+            new TMessage('error', $e->getMessage()."<br>Fazer alguma coisa");
+            return false;
+        }
     }
 }
