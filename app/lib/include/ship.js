@@ -70,9 +70,9 @@ function showDivLocation()
 
 function changemaps(field)
 {
-	console.log($(field).val());
+	console.log(field);
 
-	//reloading maps
+	__adianti_ajax_exec('class=StoreBuy&store_id=1&static=1&val='+$(field).val(),true)
 }
 
 function calcDistance(lat1,lng1,lat2,lng2)

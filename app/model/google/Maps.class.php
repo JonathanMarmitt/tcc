@@ -35,7 +35,8 @@ class Maps
 			$this->height = '400px';
 
 			$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
-		
+	
+			$this->limit = 2000;	
 	}
 
 	public function setSize($height, $width)

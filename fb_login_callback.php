@@ -57,8 +57,6 @@ if(isset($accessToken))
     TSession::setValue('fb-id', $user->getId());
     TSession::setValue('frontpage', '');
     TSession::setValue('programs',$programs);
-    
-    TScript::create("setGeolocation();");
 
     //$frontpage = $user->frontpage;
     TScript::create("location.href = 'index.php?class=OptionScreen'");

@@ -67,7 +67,7 @@ class Purshase extends TRecord
         {
             $people = new People($this->people_id);
 
-            return $people->maps_address;
+            return $people->maps_location;
         }
         else
             return $this->maps_address;

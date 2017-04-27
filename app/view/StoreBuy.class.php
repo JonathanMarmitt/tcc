@@ -29,13 +29,17 @@ class StoreBuy extends TPage
             //$slider->setSize('100%');
             //$slider->onchange = "changemaps(this);";
             //$slider->show();
+
+            $val = isset($_GET['val']) ? $_GET['val'] : null;
+
             $f = new TEntry('asd');
             $f->onchange = "changemaps(this);";
-            $f->setValue(1700);
+            $f->setValue($val);
             $f->show();
 
             $maps = new Maps();
-            $maps->setLimit(1700);
+            if($val)
+                $maps->setLimit($f->getValue());
 
             $store_id = $_GET['store_id'];
 
