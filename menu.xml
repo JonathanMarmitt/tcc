@@ -35,6 +35,10 @@
               <icon>fa:dashboard fa-fw</icon>
               <action>MyBoughts</action>
           </menuitem>
+          <menuitem label='Compras que participo'>
+              <icon>fa:dashboard fa-fw</icon>
+              <action>BoughtsWith</action>
+          </menuitem>
       </menu>
     </menuitem>
     <menuitem label='Administração'>

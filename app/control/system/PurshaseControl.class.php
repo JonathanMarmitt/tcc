@@ -9,7 +9,10 @@ class PurshaseControl
 
 			$purshase = new Purshase($param['purshase_id']);
 
-			$result = $purshase->addPeople(TSession::getValue('fb-id'));
+			$link = $param['link'];
+			$price = $param['price'];
+
+			$result = $purshase->addPeople(TSession::getValue('fb-id'), $link, $price);
 
 			if($result)
 				new TMessage('info', 'Adicionado com sucesso!');
@@ -28,7 +31,12 @@ class PurshaseControl
 		{
 			TTransaction::open('ship');
 
-			new TMessage('info', 'fazer cancelar!');
+			$purshase = new Purshase($param['purshase_id']);
+
+			$result = $purshase->removePeople(TSession::getValue('fb-id'));
+
+			if($result)
+				new TMessage('info', 'Removida com sucesso!');			
 
 			TTransaction::close();
 		}

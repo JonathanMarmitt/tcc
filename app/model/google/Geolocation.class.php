@@ -4,7 +4,6 @@ class Geolocation
 {
 	public static function setLocation()
 	{
-		var_dump($_GET);
 		TSession::setValue('lat', $_GET['lat']);
 		TSession::setValue('lng', $_GET['lng']);
 		TSession::setValue('acu', $_GET['acu']);

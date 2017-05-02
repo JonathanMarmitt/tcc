@@ -29,17 +29,19 @@ class StoreBuy extends TPage
             //$slider->setSize('100%');
             //$slider->onchange = "changemaps(this);";
             //$slider->show();
-
-            $val = isset($_GET['val']) ? $_GET['val'] : null;
-
-            $f = new TEntry('asd');
-            $f->onchange = "changemaps(this);";
-            $f->setValue($val);
-            $f->show();
-
             $maps = new Maps();
-            if($val)
-                $maps->setLimit($f->getValue());
+
+            $val = isset($_GET['val']) ? $_GET['val'] : $maps->getLimit();
+
+            $maps->setLimit($val);
+
+            if(!isset($_GET['val']))
+            {
+                $f = new TEntry('asd');
+                $f->onchange = "changemaps(this);";
+                $f->setValue($maps->getLimit());
+                $f->show();
+            }
 
             $store_id = $_GET['store_id'];
 
@@ -72,5 +74,10 @@ class StoreBuy extends TPage
             new TMessage('error', $e->getMessage()."<br>Fazer alguma coisa");
             return false;
         }
+    }
+
+    public function refresh()
+    {
+        //funcoes de ajax requerem metodo...
     }
 }

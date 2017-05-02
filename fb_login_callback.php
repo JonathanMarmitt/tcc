@@ -48,6 +48,7 @@ if(isset($accessToken))
                  'Pessoas'   =>'Pessoas em Comum',
                  'OptionScreen' => 'Comprar',
                  'MyBoughts' => 'Minhas Compras',
+                 'BoughtsWith' => 'Compras que participo',
                  'StoreFormList'=>'Store'];
 
     $programs['LoginForm'] = TRUE;

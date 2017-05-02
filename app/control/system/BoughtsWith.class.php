@@ -3,7 +3,7 @@
  * System_userList Listing
  * @author  <your name here>
  */
-class MyBoughts extends TPage
+class BoughtsWith extends TPage
 {
     //private $form;     // registration form
     private $datagrid; // listing

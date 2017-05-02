@@ -22,21 +22,20 @@ class Maps
 
 	function __construct()
 	{
-		
-			$location = Geolocation::getLocation();
+		$location = Geolocation::getLocation();
 
-			$this->lat = $location->lat;
-			$this->lng = $location->lng;
-			$this->accuracy = $location->acu;
+		$this->lat = $location->lat;
+		$this->lng = $location->lng;
+		$this->accuracy = $location->acu;
 
-			//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
+		//$this->addMark($this->lat, $this->lng, "Tu mesmo bixo!");
 
-			//$this->width = '800px';
-			$this->height = '400px';
+		//$this->width = '800px';
+		$this->height = '400px';
 
-			$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
-	
-			$this->limit = 2000;	
+		$this->html_maps = new THtmlRenderer('app/resources/views/google-maps.html');
+
+		$this->limit = 2000;	
 	}
 
 	public function setSize($height, $width)
@@ -84,37 +83,10 @@ class Maps
 		$this->limit = $l;
 	}
 
-	/*public function getGeolocation()
+	public function getLimit()
 	{
-		try
-		{
-			$params = json_encode(array('considerIp'=>'true'));
-
-			$c = curl_init();
-
-			curl_setopt($c, CURLOPT_URL, $this->urlGeoLocation.$this->APIKEY);
-			curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($c, CURLOPT_TIMEOUT, 10);
-			curl_setopt($c, CURLOPT_SSL_VERIFYPEER, true);
-			curl_setopt($c, CURLOPT_SSLVERSION, 4);
-			curl_setopt($c, CURLOPT_HTTPHEADER, array('Content-length: 0'));
-			curl_setopt($c, CURLOPT_POST, true);
-			//curl_setopt($c, CURLOPT_POSTFIELDS, $params);
-
-			$result = curl_exec($c);
-			curl_close($c);
-
-			return json_decode($result);
-
-
-		}
-		catch(Exception $e)
-		{
-			new TMessage('error', $e->getMessage());
-			return false;
-		}
-	}*/
+		return $this->limit;
+	}
 
 	private function getInfoWindowHtml($purshase = null, $people = null, $store = null, $description = null)
 	{	
@@ -150,15 +122,23 @@ HTML;
 		return str_replace("\n", "", $html);
 	}
 
-	private function scripts()
+	public function apiScript($show = true)
 	{
 		$script = <<<HTML
-		<script async defer
+		<script id='maps-script' async defer
           src='https://maps.googleapis.com/maps/api/js?key={$this->APIKEY}&callback=initMap&v=3&libraries=geometry'>
         </script>
 HTML;
+		
+		if($show)
+			echo $script;
+		else
+			return $script;
+	}
 
-        $script .= <<<HTML
+	private function scripts()
+	{
+        $script = <<<HTML
          		<script type="text/javascript">
 			    var map;
 			    function initMap()
@@ -169,10 +149,9 @@ HTML;
 			        	scrollwheel: false,
 			        	streetViewControl: false
 		      	});
-			    //deixando o infowindow aqui, apenas um é aberto no mapa, jogando ele dentro do for abre sempre um novo
 			    var infowindow = new google.maps.InfoWindow();
-
 HTML;
+
 				if($this->marks)
 				{
 					foreach($this->marks as $mark)
@@ -191,8 +170,8 @@ HTML;
 								opacity: 0.7
 							});
 											
-							var content = "{$html}"
-							content += "<div>Distancia:"+distance+"</div>"
+							var content = "{$html}";
+							content += "<div>Distancia:"+distance+"</div>";
 							
 							google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
 							    return function() {
@@ -217,6 +196,7 @@ HTML;
 	{
 		$this->addMarkYouAreHere();
 
+		$this->apiScript();
 		echo $this->scripts();
 
 		$replaces = array();

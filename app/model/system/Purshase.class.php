@@ -83,7 +83,7 @@ class Purshase extends TRecord
         return self::getObjects($criteria);
     }
 
-    public function addPeople($people_id)
+    public function addPeople($people_id, $link, $price)
     {
         $this->loadPurshaseWith();
 
@@ -96,13 +96,31 @@ class Purshase extends TRecord
         $purshase_with = new PurshaseWith();
         $purshase_with->purshase_id = $this->id;
         $purshase_with->people_id = $people_id;
-        $purshase_with->product_link = "FIXME";
-        $purshase_with->price = 299.95;
+        $purshase_with->product_link = $link;
+        $purshase_with->price = $price;
 
         if($purshase_with->store())
             return true;
         else
             new TMessage('error', 'Erro ao adicionar pessoa');
+    }
+
+    public function removePeople($people_id)
+    {
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('people_id','=',$people_id));
+        $criteria->add(new TFilter('purshase_id','=',$this->id));
+
+        $objs = PurshaseWith::getObjects($criteria);
+
+        if($objs)
+        {
+            $objs[0]->delete();
+
+            return true;
+        }
+        else
+            throw new Exception("Nenhuma compra vinculada");
     }
 
     public function hasPeople($people_id)
