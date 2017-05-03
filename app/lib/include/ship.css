@@ -79,6 +79,43 @@
 	
 }
 
+/*My Boughts*/
+.purshase
+{
+	height: auto;
+	overflow: hidden;
+	padding-bottom: 10px;
+	padding-right: 5px;
+	width: 90%;
+	margin-left: 5%;
+	margin-top: 10px;
+	background: #dfdfdf;
+	border-radius: 5px;
+}
+
+.purshase-action
+{
+	float: left;
+	width: 15%;
+	height: 100%;
+}
+
+.purshase-action .btn
+{
+	width: 80%;
+	margin-left: 15%;
+	margin-top: 10%;
+}
+
+.purshase-information
+{
+	float: right;
+	width: 85%;
+	height: 100%;
+	padding-left: 5%;
+	padding-top: 5px;
+}
+
 /*Default components*/
 .tdate-group-addon
 {

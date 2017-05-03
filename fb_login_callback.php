@@ -47,7 +47,7 @@ if(isset($accessToken))
                  'Config'    =>'Configurações da Conta',
                  'Pessoas'   =>'Pessoas em Comum',
                  'OptionScreen' => 'Comprar',
-                 'MyBoughts' => 'Minhas Compras',
+                 'MyPurshases' => 'Minhas Compras',
                  'BoughtsWith' => 'Compras que participo',
                  'StoreFormList'=>'Store'];
 

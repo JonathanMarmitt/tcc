@@ -11,6 +11,9 @@ class Purshase extends TRecord
 
     private $purshasesWith;
 
+    private $status;
+    private $store;
+
     /**
      * Constructor method
      */
@@ -27,6 +30,22 @@ class Purshase extends TRecord
         parent::addAttribute('deposite_information');
         parent::addAttribute('track_link');
         parent::addAttribute('maps_address');
+    }
+
+    public function get_status()
+    {
+        if(empty($this->status))
+            $this->status = new Status($this->status_id);
+
+        return $this->status;
+    }
+
+    public function get_store()
+    {
+        if(empty($this->store))
+            $this->store = new Store($this->store_id);
+
+        return $this->store;
     }
 
     public static function cancel()
@@ -132,6 +151,15 @@ class Purshase extends TRecord
         $objs = PurshaseWith::getObjects($criteria);
 
         return $objs ? $objs[0] : null;
+    }
+
+    public static function getMyActivePurshases()
+    {
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('people_id','=', TSession::getValue('fb-id')));
+        ##FIXME: adicionar os status
+
+        return self::getObjects($criteria);
     }
 
     public function store()

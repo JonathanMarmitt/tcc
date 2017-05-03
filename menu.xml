@@ -33,7 +33,7 @@
           </menuitem>
           <menuitem label='Minhas Compras'>
               <icon>fa:dashboard fa-fw</icon>
-              <action>MyBoughts</action>
+              <action>MyPurshases</action>
           </menuitem>
           <menuitem label='Compras que participo'>
               <icon>fa:dashboard fa-fw</icon>
