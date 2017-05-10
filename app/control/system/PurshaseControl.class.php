@@ -1,10 +1,50 @@
 <?php
 class PurshaseControl
 {
+	/**
+	* build one case for each method on this class
+	*/
+	public static function validate($param)
+	{
+		$debug = debug_backtrace();
+		$args = $debug[1]['args'][0];
+		$fields = array();
+
+		switch ($debug[1]['function'])
+		{
+			case 'onPurshase':
+				$fields = ['purshase_id' => 'Código',
+				           'link'        => 'Link do produto',
+				           'price'       => 'Preço'];
+				break;
+			case 'onRemovePeople':
+				$fields = ['purshase_id' => 'Código'];
+				break;
+			case 'cancel':
+				$fields = ['id' => 'Código'];
+				break;
+			case 'editDate':
+				$fields = ['id'   => 'Código',
+				           'date' => 'Data'];
+				break;
+			default:
+				throw new Exception("Comando desconhecido!");
+				break;
+		}
+
+		foreach($fields as $field => $label)
+		{
+			if(!isset($args[$field]) || !$args[$field])
+				throw new Exception("Parâmetro inválido: {$label}");
+		}
+	}
+
+	## PurshaseWith actions
 	public static function onPurshase($param)
 	{
 		try
 		{
+			self::validate($param);
 			TTransaction::open('ship');
 
 			$purshase = new Purshase($param['purshase_id']);
@@ -25,10 +65,11 @@ class PurshaseControl
 		}
 	}
 
-	public static function onCancelPurshase($param)
+	public static function onRemovePeople($param)
 	{
 		try
 		{
+			self::validate($param);
 			TTransaction::open('ship');
 
 			$purshase = new Purshase($param['purshase_id']);
@@ -43,6 +84,66 @@ class PurshaseControl
 		catch (Exception $e)
 		{
 			new TMessage('error', $e->getMessage());
+		}
+	}
+
+	##Status actions
+	public static function onCancel($param)
+    {
+        $action = new TAction(array('PurshaseControl', 'cancel'));
+        $action->setParameters($param); // pass the key parameter ahead
+        
+        // shows a dialog to the user
+        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to cancel?'), $action);
+    }
+
+	public static function cancel($param)
+	{
+		try
+		{
+			self::validate($param);
+			TTransaction::open('ship');
+
+			$purshase = new Purshase($param['id']);
+			$purshase->cancel();
+
+			new TMessage('info', 'Compra cancelada');
+			TScript::create("$('#purshase_{$purshase->id}').hide('slow')");
+
+			TTransaction::close();
+		}
+		catch(Exception $e)
+		{
+			new TMessage('error', $e->getMessage());
+			return false;
+		}
+	}
+
+	##Fields edit
+	public static function editDate($param)
+	{
+		try
+		{
+			TTransaction::open('ship');
+			self::validate($param);
+
+			if($param['date'] < date('Y-m-d'))
+				throw new Exception("A data não pode ser menor que hoje!");
+			
+			$purshase = new Purshase($param['id']);
+			$purshase->date_until = $param['date'];
+			$purshase->store();
+
+			new TMessage('info', 'Data alterada!');
+
+			TScript::create("changeVal('date_{$purshase->id}', '".TDate::date2br($param['date'])."');");
+
+			TTransaction::close();
+		}
+		catch(Exception $e)
+		{
+			new TMessage('error', $e->getMessage());
+			return false;
 		}
 	}
 }

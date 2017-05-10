@@ -56,15 +56,37 @@ CREATE TABLE purshase(
 CREATE TABLE purshase_with(
 	id serial not null primary key,
 	people_id bigint not null,
+	status_id int not null,
 	purshase_id int not null,
 	product_link text not null,
 	price numeric(11,2) not null,
 	receipt TEXT,
 	fl_deposit_received boolean default false,
 	foreign key(people_id) references people(id),
+	foreign key(status_id) references status(id),
 	foreign key(purshase_id) references purshase(id)
 );
 
-INSERT INTO status values (1, 'Em Andamento');
+CREATE TABLE config(
+	key varchar(100) not null primary key,
+	content text not null
+);
+
+#status
+INSERT INTO status values (1, 'Aguardando participantes');
+INSERT INTO status values (2, 'Aguardando deposito(s)');
+INSERT INTO status values (3, 'Processo de compra na loja');
+INSERT INTO status values (4, 'Produtos a caminho (Loja)');
+INSERT INTO status values (5, 'Entregando produtos');
+INSERT INTO status values (6, 'Encerrada');
+INSERT INTO status values (7, 'Aguardando entrega do produto');
+INSERT INTO status values (8, 'Produto entregado');
+INSERT INTO status values (9, 'Cancelada');
+
+# Lojas
 INSERT INTO store values (1, 'Submarino', now());
+
+# Config
+INSERT INTO config values ('STATUS_WAITING_PEOPLE', '1');
+INSERT INTO config values ('STATUS_CANCELED', '9');
 COMMIT;

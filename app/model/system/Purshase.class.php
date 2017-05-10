@@ -48,11 +48,6 @@ class Purshase extends TRecord
         return $this->store;
     }
 
-    public static function cancel()
-    {
-        $this->status_id = 2; //FIXME
-    }
-
     public function loadPurshaseWith()
     {
         $criteria = new TCriteria;
@@ -96,6 +91,7 @@ class Purshase extends TRecord
     {
         $criteria = new TCriteria;
         $criteria->add(new TFilter('store_id','=',$store_id));
+        $criteria->add(new TFilter('status_id','<>', Status::getStatusCanceled()));
         if($people_id)
             $criteria->add(new TFilter('people_id','<>',$people_id));
 
@@ -114,6 +110,7 @@ class Purshase extends TRecord
 
         $purshase_with = new PurshaseWith();
         $purshase_with->purshase_id = $this->id;
+        $purshase_with->status_id = Status::getStatusStarted();
         $purshase_with->people_id = $people_id;
         $purshase_with->product_link = $link;
         $purshase_with->price = $price;
@@ -157,16 +154,18 @@ class Purshase extends TRecord
     {
         $criteria = new TCriteria;
         $criteria->add(new TFilter('people_id','=', TSession::getValue('fb-id')));
+        $criteria->add(new TFilter('status_id','<>', Status::getStatusCanceled()));
         ##FIXME: adicionar os status
 
         return self::getObjects($criteria);
     }
 
-    public function store()
+    public function cancel()
     {
-        $this->maps_address = json_encode(Geolocation::getLocation());
+        ##FIXME: tomar atitudes para cada status possivel e mudar todos os purshase_with
 
-        return parent::store();
+        $this->status_id = Status::getStatusCanceled();
+        $this->store();
     }
 }
 ?>

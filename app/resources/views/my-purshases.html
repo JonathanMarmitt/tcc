@@ -2,14 +2,15 @@
 <div>
 	<div class='stores'>
 		<!--[stores]-->
-		<div class='purshase'>
+		<div class='purshase' id="purshase_{$id}">
 			<div class='purshase-action'>
 				{$buttons}
 			</div>
 			<div class='purshase-information'>
-				<label style="width: 100%;">Loja: {$store}</label>
+				<label style="float:left;">Loja: {$store}</label>
+				<label style="float:right;">ID: {$id}</label>
 				<label style="width: 100%;">Status: {$status}</label>
-				<label>Disponível até: {$date_until}</label>
+				<label>Disponível até: <span id="date_{$id}">{$date_until}</span></label>
 				<label style="width: 100%">Participantes: {$count} (mínimo de {$min})</label>
 			</div>
 		</div>

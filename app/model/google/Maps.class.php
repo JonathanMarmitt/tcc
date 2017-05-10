@@ -102,7 +102,7 @@ class Maps
 				<div>
 HTML;
 			if($purshase_with = $purshase->hasPeople(TSession::getValue('fb-id')))
-				$html .= "<button class='btn btn-warning' onclick='onCancelPurshase({$purshase->id})'>Cancelar</button>";
+				$html .= "<button class='btn btn-warning' onclick='onRemovePeople({$purshase->id})'>Cancelar</button>";
 			else
 				$html .= "<button class='btn btn-success' onclick='onPurshase({$purshase->id})'>Participar</button>";
 

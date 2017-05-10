@@ -1,3 +1,37 @@
+function customQuestion(title, inputType, value, class_callback)
+{
+	bootbox.prompt({
+		title: title,
+		inputType: inputType,
+		value: value,
+		callback: function(result){
+            if (typeof class_callback != 'undefined')
+            {
+                __adianti_ajax_exec(class_callback+"&date="+result)
+            }
+		}
+	})
+}
+
+function changeVal(id, value)
+{
+	try{
+		field = $('#'+id)
+		switch(field.prop('tagName'))
+		{
+			case 'INPUT':
+				field.val(value)
+				break;
+			default:
+				field.html(value)
+				break;
+		}
+	}
+	catch(e){
+
+	}
+}
+
 function setInterest(like_id, like_description, dialog_id)
 {
 	$('#option_hidden').val(like_id)
@@ -56,9 +90,9 @@ function onPurshase(purshase_id)
     });
 }
 
-function onCancelPurshase(purshase_id)
+function onRemovePeople(purshase_id)
 {
-	__adianti_ajax_exec('class=PurshaseControl&method=onCancelPurshase&purshase_id='+purshase_id,'alert',true)
+	__adianti_ajax_exec('class=PurshaseControl&method=onRemovePeople&purshase_id='+purshase_id,'alert',true)
 }
 
 function isGeolocationAvailable()

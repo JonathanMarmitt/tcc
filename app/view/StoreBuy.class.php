@@ -57,13 +57,6 @@ class StoreBuy extends TPage
                         $maps->addMark($location->lat, $location->lng, $purshase->id);
                 }
             }
-            //TPage::include_css('app/resources/styles.css');
-            /*$html1 = new THtmlRenderer('app/resources/views/store-buy.html');
-            
-            // replace the main section variables
-            $html1->enableSection('stores', $s, true);
-            $html1->enableSection('main', array());
-            $html1->show();*/
             
             $maps->show();
 
