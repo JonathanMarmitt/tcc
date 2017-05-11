@@ -20,6 +20,9 @@ class PurshaseControl
 			case 'onRemovePeople':
 				$fields = ['purshase_id' => 'Código'];
 				break;
+			case 'progress':
+				$fields = ['id' => 'Código'];
+				break;
 			case 'cancel':
 				$fields = ['id' => 'Código'];
 				break;
@@ -84,6 +87,48 @@ class PurshaseControl
 		catch (Exception $e)
 		{
 			new TMessage('error', $e->getMessage());
+		}
+	}
+
+	public static function onProgress($param)
+	{
+		$action = new TAction(array('PurshaseControl', 'progress'));
+        $action->setParameters($param); // pass the key parameter ahead
+        
+        // shows a dialog to the user
+        new TQuestion(TAdiantiCoreTranslator::translate('Prosseguir para próxima etapa?'), $action);
+	}
+
+	public static function progress($param)
+	{
+		try
+		{
+			self::validate($param);
+
+			TTransaction::open('ship');
+
+			$purshase = new Purshase($param['id']);
+
+			switch ($purshase->status_id)
+			{
+				case 1:
+					$purshase->getNextStatus();
+
+					break;
+				
+				default:
+					throw new Exception("Ocorreu um erro");
+					break;
+			}
+			$purshase->store();
+
+			new TMessage('info', 'Atualizado!');
+
+			TTransaction::close();
+		}
+		catch(Exception $e)
+		{
+			new TMessage('error', $e->getMessage());	
 		}
 	}
 

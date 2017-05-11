@@ -167,5 +167,18 @@ class Purshase extends TRecord
         $this->status_id = Status::getStatusCanceled();
         $this->store();
     }
+
+    /**
+    * funcao responsavel pelo fluxo das compras, dizendo qual status segue qual, no fluxo correto
+    */
+    public function getNextStatus()
+    {
+        switch ($this->status_id)
+        {
+            case 1:
+                $this->status_id = 2;
+                break;
+        }
+    }
 }
 ?>

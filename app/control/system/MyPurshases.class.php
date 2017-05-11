@@ -29,54 +29,7 @@ class MyPurshases extends TPage
             $current = $purshase->getCurrentPeople();
             $count = "<font color='".$purshase->getColor($current)."'>".$current.' / '.$purshase->max_people."</font>";
 
-            $btn_cancel = new TButton('cancel');
-            $btn_cancel->class = 'btn btn-danger';
-            $btn_cancel->title = 'Cancelar';
-            $btn_cancel->addFunction("__adianti_post_data('form', 'class=PurshaseControl&method=onCancel&static=1&id={$purshase->id}');");
-            $btn_cancel->setImage('fa:ban');
-
-            $buttons = $btn_cancel->getHtml();
-            switch ($purshase->status_id)
-            {
-                case 1:
-                    $btn_finalize = new TButton('finalize');
-                    $btn_finalize->class = 'btn btn-success';
-                    $btn_finalize->title = 'Finalizar compra';
-                    $btn_finalize->setImage('fa:arrow-right');
-                    $buttons .= $btn_finalize->getHtml();
-
-                    $btn_date = new TButton('date_until');
-                    $btn_date->class = 'btn btn-primary';
-                    $btn_date->title = 'Alterar data';
-                    $btn_date->addFunction("customQuestion('Alterar Data Até', 'date', '{$purshase->date_until}', 'class=PurshaseControl&method=editDate&id={$purshase->id}&static=1')");
-                    $btn_date->setImage('fa:calendar');
-                    $buttons .= $btn_date->getHtml();
-
-                    $btn_people = new TButton('people');
-                    $btn_people->class = 'btn btn-primary';
-                    $btn_people->title = 'Ver participantes';
-                    $btn_people->setImage('fa:users');
-                    $buttons .= $btn_people->getHtml();
-
-                    break;
-                case 2:
-                    $btn_people = new TButton('receipt');
-                    $btn_people->class = 'btn btn-primary';
-                    $btn_people->title = 'Depósitos recebidos';
-                    $btn_people->setImage('fa:users');
-                    $buttons .= $btn_people->getHtml();
-
-                    break;
-                case 3:
-
-                    $btn_track = new TButton('track');
-                    $btn_track->class = 'btn btn-success';
-                    $btn_track->title = 'Adicionar rastreio';
-                    $btn_track->setImage('fa:map');
-                    $buttons .= $btn_track->getHtml();
-
-                    break;
-            }
+            $buttons = self::getActionButtons($purshase);
 
             $s[] = array('id'    => $purshase->id, 
                          'description' => $purshase->store_id,
@@ -111,44 +64,7 @@ class MyPurshases extends TPage
             $current = $purshase->getCurrentPeople();
             $count = "<font color='".$purshase->getColor($current)."'>".$current.' / '.$purshase->max_people."</font>";
 
-            $btn_cancel = new TButton('cancel');
-            $btn_cancel->class = 'btn btn-danger';
-            $btn_cancel->title = 'Deixar de participar';
-            $btn_cancel->setImage('fa:ban');
-
-            $buttons = $btn_cancel->getHtml();
-            switch ($purshase->status_id)
-            {
-                case 1:
-                    $btn_receipt = new TButton('receipt');
-                    $btn_receipt->class = 'btn btn-success';
-                    $btn_receipt->title = 'Adicionar comprovante de depósito';
-                    $btn_receipt->setImage('fa:arrow-right');
-
-                    $buttons .= $btn_receipt->getHtml();
-
-                    $btn_track = new TButton('track');
-                    $btn_track->class = 'btn btn-success';
-                    $btn_track->title = "Acessar rastreio";
-                    $btn_track->setImage('fa:map');
-
-                    $buttons .= $btn_track->getHtml();
-
-                    $btn_people = new TButton('people');
-                    $btn_people->class = 'btn btn-primary';
-                    $btn_people->title = 'Participantes';
-                    $btn_people->setImage('fa:users');
-
-                    $buttons .= $btn_people->getHtml();
-
-                    $btn_people = new TButton('people');
-                    $btn_people->class = 'btn btn-primary';
-                    $btn_people->title = 'Participantes';
-                    $btn_people->setImage('fa:users');
-
-                    $buttons .= $btn_people->getHtml();
-                    break;
-            }
+            $buttons = self::getActionButtonsPurshaseWith($purshase);
 
             $sw[] = array('id' => $purshase->id, 
                          'description' => $purshase->store_id,
@@ -169,5 +85,113 @@ class MyPurshases extends TPage
         $html1->show();
 
         TTransaction::close();
+    }
+
+
+    ##Action buttons
+    public static function getActionButtons(Purshase $purshase, $html_return = true)
+    {
+        $btn_status = [1 => ['cancel','progress','date','people'],
+                       2 => ['cancel','progress'],
+                       3 => ['cancel','track'],
+                       4 => [],
+                       5 => [],
+                       6 => [],
+                       7 => [],
+                       8 => [],
+                       9 => []];
+        $btn = array();
+
+        $btn['cancel'] = new TButton('cancel');
+        $btn['cancel']->class = 'btn btn-danger';
+        $btn['cancel']->title = 'Cancelar';
+        $btn['cancel']->addFunction("__adianti_post_data('form', 'class=PurshaseControl&method=onCancel&static=1&id={$purshase->id}');");
+        $btn['cancel']->setImage('fa:ban');
+
+        $btn['progress'] = new TButton('progress');
+        $btn['progress']->class = 'btn btn-success';
+        $btn['progress']->title = 'Prosseguir';
+        $btn['progress']->addFunction("__adianti_post_data('form', 'class=PurshaseControl&method=onProgress&static=1&id={$purshase->id}');");
+        $btn['progress']->setImage('fa:arrow-right');
+
+        $btn['date'] = new TButton('date_until');
+        $btn['date']->class = 'btn btn-primary';
+        $btn['date']->title = 'Alterar data';
+        $btn['date']->addFunction("customQuestion('Alterar Data Até', 'date', '{$purshase->date_until}', 'class=PurshaseControl&method=editDate&id={$purshase->id}&static=1')");
+        $btn['date']->setImage('fa:calendar');
+
+        $btn['people'] = new TButton('people');
+        $btn['people']->class = 'btn btn-primary';
+        $btn['people']->title = 'Ver participantes';
+        $btn['people']->setImage('fa:users');
+
+        //$btn['receipt'] = new TButton('receipt');
+        //$btn['receipt']->class = 'btn btn-primary';
+        //$btn['receipt']->title = 'Depósitos recebidos';
+        //$btn['receipt']->setImage('fa:users');
+
+        $btn['track'] = new TButton('track');
+        $btn['track']->class = 'btn btn-success';
+        $btn['track']->title = 'Adicionar rastreio';
+        $btn['track']->setImage('fa:map');
+
+        $html = "";
+        $buttons = array();
+
+        foreach($btn_status[$purshase->status_id] as $status)
+        {    
+            $html .= $btn[$status]->getHtml();
+            $buttons[] = $btn[$status];   
+        }
+
+        return $html_return ? $html : $buttons;
+    }
+
+    public static function getActionButtonsPurshaseWith(Purshase $purshase, $html_return = true)
+    {
+        $btn_status = [1 => ['leave','people'],
+                       2 => ['leave','people','receipt'],
+                       3 => ['leave','people','track'],
+                       4 => [],
+                       5 => [],
+                       6 => [],
+                       7 => [],
+                       8 => [],
+                       9 => []];
+        $btn = array();
+
+        /* criar botoes:
+        1: alterar participantes*/
+
+        $btn['leave'] = new TButton('leave');
+        $btn['leave']->class = 'btn btn-danger';
+        $btn['leave']->title = 'Deixar de participar';
+        $btn['leave']->setImage('fa:ban');
+
+        $btn['receipt'] = new TButton('receipt');
+        $btn['receipt']->class = 'btn btn-success';
+        $btn['receipt']->title = 'Adicionar comprovante de depósito';
+        $btn['receipt']->setImage('fa:arrow-right');
+
+        $btn['track'] = new TButton('track');
+        $btn['track']->class = 'btn btn-success';
+        $btn['track']->title = "Acessar rastreio";
+        $btn['track']->setImage('fa:map');
+
+        $btn['people'] = new TButton('people');
+        $btn['people']->class = 'btn btn-primary';
+        $btn['people']->title = 'Participantes';
+        $btn['people']->setImage('fa:users');
+
+        $html = "";
+        $buttons = array();
+
+        foreach($btn_status[$purshase->status_id] as $status)
+        {    
+            $html .= $btn[$status]->getHtml();
+            $buttons[] = $btn[$status];   
+        }
+
+        return $html_return ? $html : $buttons;
     }
 }
