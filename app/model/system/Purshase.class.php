@@ -30,6 +30,7 @@ class Purshase extends TRecord
         parent::addAttribute('deposite_information');
         parent::addAttribute('track_link');
         parent::addAttribute('maps_address');
+        parent::addAttribute('rank');
     }
 
     public function get_status()
@@ -50,10 +51,21 @@ class Purshase extends TRecord
 
     public function loadPurshaseWith()
     {
-        $criteria = new TCriteria;
-        $criteria->add(new TFilter('purshase_id','=',$this->id));
+        if(!$this->purshasesWith)
+        {
+            $criteria = new TCriteria;
+            $criteria->add(new TFilter('purshase_id','=',$this->id));
+            $criteria->add(new TFilter('status_id','<>', Status::getStatusCanceled()));
 
-        $this->purshasesWith = PurshaseWith::getObjects($criteria);
+            $this->purshasesWith = PurshaseWith::getObjects($criteria);
+        }
+    }
+
+    public function getPeople()
+    {    
+        $this->loadPurshaseWith();
+
+        return $this->purshasesWith;
     }
 
     public function getCurrentPeople()
@@ -63,8 +75,23 @@ class Purshase extends TRecord
         return count($this->purshasesWith);
     }
 
-    public function getColor($current)
+    public function getCountDeposited()
     {
+        $this->loadPurshaseWith();
+
+        $c = 0;
+        foreach($this->purshasesWith as $purshaseWith)
+        {
+            if($purshaseWith->fl_deposit_done)
+                $c++;
+        }
+
+        return $c;
+    }
+
+    public function getColor()
+    {
+        $current = $this->getCurrentPeople();
         if($current >= $this->max_people)
             return 'green';
         else if($current >= $this->min_people)

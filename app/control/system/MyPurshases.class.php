@@ -26,28 +26,67 @@ class MyPurshases extends TPage
 
         foreach($purshases as $purshase)
         {
-            $current = $purshase->getCurrentPeople();
-            $count = "<font color='".$purshase->getColor($current)."'>".$current.' / '.$purshase->max_people."</font>";
+            $count = "<font color='".$purshase->getColor()."'>".$purshase->getCurrentPeople().' / '.$purshase->max_people."</font>";
 
             $buttons = self::getActionButtons($purshase);
 
-            $s[] = array('id'    => $purshase->id, 
-                         'description' => $purshase->store_id,
-                         'status' => $purshase->status->description,
-                         'store' => $purshase->store->description,
-                         'count' => $count,
-                         'min' => $purshase->min_people,
-                         'date_until' => TDate::date2br($purshase->date_until),
-                         'buttons' => $buttons);
+            $s = array('id'    => $purshase->id,
+                       'description' => $purshase->store_id,
+                       'status' => $purshase->status->description,
+                       'store' => $purshase->store->description,
+                       'count' => $count,
+                       'deposit_count' => $purshase->getCurrentPeople(),
+                       'deposit_done' => $purshase->getCountDeposited(),
+                       'min' => $purshase->min_people,
+                       'date_until' => TDate::date2br($purshase->date_until));
+
+            ## tabela dos participantes da compra
+            if($people = $purshase->getPeople())
+            {
+                $table_people = new TTable("table_people_{$purshase->id}");
+                $table_people->class = 'table-people table table-condensed';
+
+                foreach($people as $purshase_with)
+                {
+                    $btn_link = new TButton('link');
+                    $btn_link->setImage('fa:link');
+                    $btn_link->class = 'btn btn-primary';
+
+                    $btn_receipt = new TButton('confirm_receipt');
+                    $btn_receipt->setImage('fa:check');
+                    $btn_receipt->class = 'btn btn-success';
+
+                    $btn_delete = new TButton('exclude');
+                    $btn_delete->setImage('fa:times');
+                    $btn_delete->class = 'btn btn-danger';
+
+                    $row = $table_people->addRow();
+
+                    $row->addCell($btn_link);
+                    $row->addCell($btn_receipt);
+                    $row->addCell($btn_delete);
+                    $row->addCell($purshase_with->people->name)->style = "width: 100%";
+                }
+            }
+            else
+                $table_people = "";
+
+            $fields = new THtmlRenderer("app/resources/views/my-purshase-status-{$purshase->status_id}.html");
+            $fields->enableSection('main', $s);
+
+            $r[] = array('fields' => $fields->getContents(),
+                         'buttons' => $buttons,
+                         'table_people' => $table_people,
+                         'id' => $purshase->id);
         }
 
         //TPage::include_css('app/resources/styles.css');
-        $html1 = new THtmlRenderer('app/resources/views/my-purshases.html');
+        $html = new THtmlRenderer('app/resources/views/my-purshases.html');
         
         // replace the main section variables
-        $html1->enableSection('stores', $s, true);
-        $html1->enableSection('main', array());
-        $html1->show();
+        $html->enableSection('stores', $r, true);
+        $html->enableSection('main', array());
+        $html->show();
 
         ##################################################################################
 
@@ -59,6 +98,7 @@ class MyPurshases extends TPage
 
         $purshases = PurshaseWith::getMyActivePurshases();
 
+        unset($r);
         foreach($purshases as $purshase)
         {
             $current = $purshase->getCurrentPeople();
@@ -66,21 +106,25 @@ class MyPurshases extends TPage
 
             $buttons = self::getActionButtonsPurshaseWith($purshase);
 
-            $sw[] = array('id' => $purshase->id, 
-                         'description' => $purshase->store_id,
-                         'status' => $purshase->status->description,
-                         'store' => $purshase->store->description,
-                         'count' => $count,
-                         'min' => $purshase->min_people,
-                         'date_until' => TDate::date2br($purshase->date_until),
-                         'buttons' => $buttons);
+            $s = array('id'    => $purshase->id, 
+                       'description' => $purshase->store_id,
+                       'status' => $purshase->status->description,
+                       'store' => $purshase->store->description,
+                       'count' => $count,
+                       'min' => $purshase->min_people,
+                       'date_until' => TDate::date2br($purshase->date_until));
+
+            $fields = new THtmlRenderer("app/resources/views/my-purshase-status-{$purshase->status_id}.html");
+            $fields->enableSection('main', $s);
+
+            $r[] = array('fields' => $fields->getContents(), 'buttons' => $buttons);
         }
 
         //TPage::include_css('app/resources/styles.css');
         $html1 = new THtmlRenderer('app/resources/views/my-purshases.html');
         
         // replace the main section variables
-        $html1->enableSection('stores', $sw, true);
+        $html1->enableSection('stores', $r, true);
         $html1->enableSection('main', array());
         $html1->show();
 
@@ -92,7 +136,7 @@ class MyPurshases extends TPage
     public static function getActionButtons(Purshase $purshase, $html_return = true)
     {
         $btn_status = [1 => ['cancel','progress','date','people'],
-                       2 => ['cancel','progress'],
+                       2 => ['cancel','progress','people'],
                        3 => ['cancel','track'],
                        4 => [],
                        5 => [],
@@ -120,10 +164,15 @@ class MyPurshases extends TPage
         $btn['date']->addFunction("customQuestion('Alterar Data Até', 'date', '{$purshase->date_until}', 'class=PurshaseControl&method=editDate&id={$purshase->id}&static=1')");
         $btn['date']->setImage('fa:calendar');
 
-        $btn['people'] = new TButton('people');
-        $btn['people']->class = 'btn btn-primary';
-        $btn['people']->title = 'Ver participantes';
-        $btn['people']->setImage('fa:users');
+        if($purshase->getCurrentPeople() > 0)
+        {
+            $btn['people'] = new TButton('people');
+            $btn['people']->class = 'btn btn-primary';
+            $btn['people']->title = 'Ver participantes';
+            //$btn['people']->addFunction("Adianti.waitMessage = 'Carregando pessoas...';__adianti_post_data('form', 'class=PurshaseControl&method=onPeopleWith&static=1&id={$purshase->id}');");
+            $btn['people']->addFunction("\$('.people_{$purshase->id}').slideToggle('slow')");
+            $btn['people']->setImage('fa:arrow-down');
+        }
 
         //$btn['receipt'] = new TButton('receipt');
         //$btn['receipt']->class = 'btn btn-primary';
@@ -140,8 +189,11 @@ class MyPurshases extends TPage
 
         foreach($btn_status[$purshase->status_id] as $status)
         {    
-            $html .= $btn[$status]->getHtml();
-            $buttons[] = $btn[$status];   
+            if(isset($btn[$status]))
+            {
+                $html .= $btn[$status]->getHtml();
+                $buttons[] = $btn[$status];   
+            }
         }
 
         return $html_return ? $html : $buttons;
@@ -149,9 +201,9 @@ class MyPurshases extends TPage
 
     public static function getActionButtonsPurshaseWith(Purshase $purshase, $html_return = true)
     {
-        $btn_status = [1 => ['leave','people'],
-                       2 => ['leave','people','receipt'],
-                       3 => ['leave','people','track'],
+        $btn_status = [1 => ['leave'],
+                       2 => ['leave','receipt'],
+                       3 => ['leave','track'],
                        4 => [],
                        5 => [],
                        6 => [],

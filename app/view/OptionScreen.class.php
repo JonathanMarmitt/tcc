@@ -23,6 +23,8 @@ class OptionScreen extends TPage
  
         require_once('app/templates/theme1/libraries.html');
 
+        //TSession::setValue('fb-id', 1385233441523198);
+
         //TPage::include_css('app/resources/styles.css');
         $html1 = new THtmlRenderer('app/resources/views/option-screen.html');
         

@@ -47,6 +47,7 @@ CREATE TABLE purshase(
 	deposite_information TEXT not null,
 	track_link TEXT,
 	maps_address TEXT,
+	rank numeric(11,2),
 	foreign key(store_id) references store(id),
 	foreign key(like_id) references people_like(id),
 	foreign key(people_id) references people(id),
@@ -61,7 +62,9 @@ CREATE TABLE purshase_with(
 	product_link text not null,
 	price numeric(11,2) not null,
 	receipt TEXT,
+	fl_deposit_done boolean default false,
 	fl_deposit_received boolean default false,
+	rank numeric(11,2),
 	foreign key(people_id) references people(id),
 	foreign key(status_id) references status(id),
 	foreign key(purshase_id) references purshase(id)

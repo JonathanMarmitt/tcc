@@ -7,12 +7,11 @@
 				{$buttons}
 			</div>
 			<div class='purshase-information'>
-				<label style="float:left;">Loja: {$store}</label>
-				<label style="float:right;">ID: {$id}</label>
-				<label style="width: 100%;">Status: {$status}</label>
-				<label>Disponível até: <span id="date_{$id}">{$date_until}</span></label>
-				<label style="width: 100%">Participantes: {$count} (mínimo de {$min})</label>
+				{$fields}
 			</div>
+		</div>
+		<div class="people_{$id}">
+			{$table_people}
 		</div>
 		<!--[/stores]-->
 	</div>

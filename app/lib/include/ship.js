@@ -1,3 +1,37 @@
+/*Notify function*/
+function notify(title, message = "", time = 5000)
+{
+	if(Notification.permission == 'granted')
+	{
+		n = new Notification(title, {body: message, title: title, icon: 'app/images/favicon.png'});
+		setTimeout(n.close.bind(n), time);
+	}
+	else if(Notification.permission == 'default')
+	{
+		Notification.requestPermission(function(permission){
+			notify(title, message, time);
+		})	
+	}
+	else if(Notification.permission == 'denied')
+	{
+		toast(message, time);
+	}
+}
+
+/*Snackbar, similar to android toast*/
+function toast(message, time = 3000)
+{
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar")
+
+    // Add the "show" class to DIV
+    x.className = "show";
+    x.innerHTML = message;
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, time);
+}
+
 function customQuestion(title, inputType, value, class_callback)
 {
 	bootbox.prompt({
@@ -5,7 +39,7 @@ function customQuestion(title, inputType, value, class_callback)
 		inputType: inputType,
 		value: value,
 		callback: function(result){
-            if (typeof class_callback != 'undefined')
+            if (typeof class_callback != 'undefined' && result)
             {
                 __adianti_ajax_exec(class_callback+"&date="+result)
             }

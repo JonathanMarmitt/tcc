@@ -51,10 +51,13 @@ class StoreBuy extends TPage
             {
                 foreach($current_purshases as $purshase)
                 {
-                    $location = json_decode($purshase->getLocation());
+                    if($purshase->max_people >= $purshase->getCurrentPeople())
+                    {
+                        $location = json_decode($purshase->getLocation());
 
-                    if($location)
-                        $maps->addMark($location->lat, $location->lng, $purshase->id);
+                        if($location)
+                            $maps->addMark($location->lat, $location->lng, $purshase->id);
+                    }
                 }
             }
             

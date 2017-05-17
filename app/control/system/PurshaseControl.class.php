@@ -30,6 +30,9 @@ class PurshaseControl
 				$fields = ['id'   => 'Código',
 				           'date' => 'Data'];
 				break;
+			case 'onPeopleWith':
+				$fields = ['id'   => 'Código'];
+				break;
 			default:
 				throw new Exception("Comando desconhecido!");
 				break;
@@ -179,7 +182,8 @@ class PurshaseControl
 			$purshase->date_until = $param['date'];
 			$purshase->store();
 
-			new TMessage('info', 'Data alterada!');
+			new TNotify('success', 'Data alterada com sucesso!');
+			//new TMessage('info', 'Data alterada!');
 
 			TScript::create("changeVal('date_{$purshase->id}', '".TDate::date2br($param['date'])."');");
 
@@ -189,6 +193,50 @@ class PurshaseControl
 		{
 			new TMessage('error', $e->getMessage());
 			return false;
+		}
+	}
+
+	public static function onPeopleWith($param)
+	{
+		try
+		{
+			TTransaction::open('ship');
+			self::validate($param);
+
+			$purshase = new Purshase($param['id']);
+
+			$table = new TTable('people');
+			$table->class = 'table table-striped';
+			$row = $table->addRow();
+			$row->addCell("<b>Participante</b>");
+			$row->addCell("<b>Conf. Depós.</b>");
+			$row->addCell("#");
+
+			foreach($purshase->getPeople() as $purshase_with)
+			{
+				$btn_receipt = new TButton('confirm_receipt');
+				$btn_receipt->setImage('fa:check');
+				$btn_receipt->class = 'btn btn-success';
+
+				$btn_delete = new TButton('exclude');
+				$btn_delete->setImage('fa:check');
+				$btn_delete->class = 'btn btn-danger';
+
+				$row = $table->addRow();
+
+				$row->addCell($purshase_with->people->name);
+				$row->addCell($btn_receipt);
+				$row->addCell($btn_delete);
+			}
+
+			new TMessage('info', $table->getContents(), null, 'Participantes', false);
+
+			TTransaction::close();
+		}
+		catch (Exception $e)
+		{
+			new TMessage('error', $e->getMessage());
+			return false;	
 		}
 	}
 }

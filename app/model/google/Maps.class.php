@@ -93,11 +93,13 @@ class Maps
 		if($purshase)
 		{
 			$date_until = TDate::date2br($purshase->date_until);
+            $count = "<font color='".$purshase->getColor()."'>".$purshase->getCurrentPeople().' / '.$purshase->max_people."</font>";
 
 			$html = <<<HTML
 				<div><b>Comprador</b>: $people->name</div>
 				<div><b>Loja</b>: $store->description</div>
 				<div><b>Disponível até</b>: $date_until</div>
+				<div><b>Participantes</b>: $count</div>
 				<hr>
 				<div>
 HTML;
@@ -171,7 +173,7 @@ HTML;
 							});
 											
 							var content = "{$html}";
-							content += "<div>Distancia:"+distance+"</div>";
+							//content += "<div>Distancia:"+distance+"</div>";
 							
 							google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
 							    return function() {

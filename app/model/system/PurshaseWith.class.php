@@ -9,6 +9,8 @@ class PurshaseWith extends TRecord
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'serial'; // {max, serial}
 
+    private $people;
+    private $status;
     /**
      * Constructor method
      */
@@ -21,7 +23,25 @@ class PurshaseWith extends TRecord
         parent::addAttribute('product_link');
         parent::addAttribute('price');
         parent::addAttribute('receipt');
+        parent::addAttribute('fl_deposit_done');
         parent::addAttribute('fl_deposit_received');
+        parent::addAttribute('rank');
+    }
+
+    public function get_status()
+    {
+        if(empty($this->status))
+            $this->status = new Status($this->status_id);
+
+        return $this->status;
+    }
+
+    public function get_people()
+    {
+        if(empty($this->people))
+            $this->people = new People($this->people_id);
+
+        return $this->people;
     }
 
     public static function getMyActivePurshases()
