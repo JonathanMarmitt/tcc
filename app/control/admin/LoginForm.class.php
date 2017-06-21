@@ -14,8 +14,15 @@ class LoginForm extends TPage
     function __construct($param)
     {
         parent::__construct();
+ 
+        //require_once('app/templates/theme1/libraries.html');
 
-        $table = new TTable;
+        //TPage::include_css('app/resources/styles.css');
+        $html1 = new THtmlRenderer('app/resources/login.html');
+        $html1->enableSection('main', array());
+        $html1->show();
+
+        /*$table = new TTable;
         $table->width = '100%';
         // creates the form
         $this->form = new TForm('form_login');
@@ -30,42 +37,6 @@ class LoginForm extends TPage
         // add the notebook inside the form
         $this->form->add($table);
 
-        // create the form fields
-        //$login = new TEntry('login');
-        //$password = new TPassword('password');
-        
-        // define the sizes
-        //$login->setSize('70%', 40);
-        //$password->setSize('70%', 40);
-
-        //$login->style = 'height:35px; font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
-        //$password->style = 'height:35px;margin-bottom: 15px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
-
-        //$row=$table->addRow();
-        //$row->addCell( new TLabel('Log in') )->colspan = 2;
-        //$row->class='tformtitle';
-
-        //$login->placeholder = _t('User');
-        //$password->placeholder = _t('Password');
-
-        //$user = '<span style="float:left;width:35px;margin-left:45px;height:35px;" class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>';
-        //$locker = '<span style="float:left;width:35px;margin-left:45px;height:35px;" class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>';
-
-        //$container1 = new TElement('div');
-        //$container1->add($user);
-        //$container1->add($login);
-
-        //$container2 = new TElement('div');
-        //$container2->add($locker);
-        //$container2->add($password);
-
-        //$row=$table->addRow();
-        //$row->addCell($container1)->colspan = 2;
-
-        // add a row for the field password
-        //$row=$table->addRow();
-        //$row->addCell($container2)->colspan = 2;
-        
         $save_button=new TButton('save');
         // define the button action
         $save_button->setAction(new TAction(array($this, 'onLoginFacebook')), 'Continue Com Facebook');
@@ -78,10 +49,10 @@ class LoginForm extends TPage
         $cell->colspan = 2;
         $cell->style = 'text-align:center';
 
-        $this->form->setFields(array(/*$login, $password,*/ $save_button));
+        $this->form->setFields(array($save_button));
 
         // add the form to the page
-        parent::add($this->form);
+        parent::add($this->form);*/
     }
 
     /**
