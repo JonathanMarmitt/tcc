@@ -18,6 +18,7 @@ class MyFacebook
 
         $permissions = ['email', 'user_likes', 'user_about_me']; // Optional permissions
         
+        /*return $helper->getLoginUrl('http://shippingshare.c/ship/fb_login_callback.php', $permissions);*/
         return $helper->getLoginUrl('http://localhost/ship/fb_login_callback.php', $permissions);
 	}
 

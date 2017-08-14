@@ -16,7 +16,7 @@ class StoreBuy extends TPage
      * Creates the page
      */
     function __construct()
-    {
+    {   
         try
         {
             parent::__construct();
@@ -37,13 +37,24 @@ class StoreBuy extends TPage
 
             if(!isset($_GET['val']))
             {
-                $f = new TEntry('asd');
-                $f->onchange = "changemaps(this);";
-                $f->setValue($maps->getLimit());
-                $f->show();
+                $d = new TEntry('distance');
+                $d->setValue($maps->getLimit());
+                $d->setSize(65);
+                $d->show();
+
+                $l = new TLabel('metros');
+                $l->style = 'margin-left:5px;';
+                $l->show();
+
+                $btn = new TButton('distance_button');
+                $btn->onclick = "changemaps();";
+                $btn->setLabel('Filtrar distância');
+                $btn->class = 'btn btn-sm btn-primary';
+                $btn->style = 'margin-left: 10px;margin-bottom:6px;';
+                $btn->show();
             }
 
-            $store_id = $_GET['store_id'];
+            $store_id = isset($_GET['store_id']) ? $_GET['store_id'] : null;
 
             $current_purshases = Purshase::getCurrentByStore($store_id, TSession::getValue('fb-id'));
 
@@ -64,6 +75,8 @@ class StoreBuy extends TPage
             $maps->show();
 
             TTransaction::close();
+
+            TScript::create("$(document).ready(function(){__adianti_unblock_ui();})");
         }
         catch(Exception $e)
         {

@@ -1,13 +1,13 @@
 <link href="app/lib/include/login.css?afver=201" rel="stylesheet" type="text/css" media="screen"/>
 <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-<div id="fb-root"></div>
+<!-- <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
   js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.9&appId=187549301747003";
   fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+}(document, 'script', 'facebook-jssdk'));</script>  -->
 
 <div id='login-header'>
 	<div class='header-logo'>
@@ -17,7 +17,8 @@
 <div id='login-main'>
 	<label id='main-desc'>Quer dividir o frete com alguém? Encontre pessoas com os mesmos interesses que você!</label>
 	<div id='fb-button'>
-		<div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+		<!-- <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div> -->
+		<button id='fb-login' class='btn btn-primary' onclick="Adianti.waitMessage = 'Carregando';__adianti_post_data('form_login', 'class=LoginForm&method=onLoginFacebook');return false;">Logar com facebook</button>
 	</div>
 	<div id='main-how-work'>
 		<a href='#login-how-work'>
@@ -44,11 +45,26 @@
 </div>
 <div id='login-how-work'>
 	<label id='login-how-work-desc1'>Como funciona:</label>
-	<div class='how-work-line'><span class="how-work-number">1</span><span class="how-work-desc">Você cria uma intenção de compra</span></div>
+	<div class='how-work-line'>
+		<span class="how-work-number">1</span>
+		<span class="how-work-desc">Você cria uma intenção de compra</span>
+	</div>
+	<div class='how-work-line'>
+		<span class="how-work-number">2</span>
+		<span class="how-work-desc">Aguarde as pessoas juntarem-se</span>
+	</div>
+	<div class='how-work-line'>
+		<span class="how-work-number">3</span>
+		<span class="how-work-desc">Receba o dinheiro e faça a compra</span>
+	</div>
+	<div class='how-work-line'>
+		<span class="how-work-number">4</span>
+		<span class="how-work-desc">Receba os produtos e combine a entrega</span>
+	</div>
 </div>
 <div id='login-recently'>
-
+	adicionar aqui as compras recentes
 </div>
 <div id='login-about'>
-
+	adicionar aqui sobre, creditos, termos e etc
 </div>

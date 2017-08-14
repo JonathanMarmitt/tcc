@@ -2,6 +2,8 @@
 require_once 'init.php';
 $theme = 'theme3';
 new TSession;
+$class = isset($_REQUEST['class']) ? $_REQUEST['class'] : '';
+$public = in_array($class, $ini['public_classes']);
 
 if (MyFacebook::isLoged())
 {
@@ -27,16 +29,8 @@ $content = str_replace('{HEAD}', $css.$js, $content);
 
 echo $content;
 
-//if (TSession::getValue('logged'))
-if (MyFacebook::isLoged())
+if (MyFacebook::isLoged() or $public)
 {
-	//$accessToken = TSession::getValue('fb-accesToken');
-
-	//$fb = new MyFacebook();
-
-	//$likes = $fb->userLikes($accessToken, $fb->getMyId($accessToken));
-	//var_dump($likes);
-
 	if (isset($_REQUEST['class']))
     {
 		$method = isset($_REQUEST['method'])?$_REQUEST['method']:NULL;
@@ -47,3 +41,5 @@ else
 {
 	AdiantiCoreApplication::loadPage('LoginForm', '', $_REQUEST);
 }
+
+TScript::create("setGeolocation()");

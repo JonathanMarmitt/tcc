@@ -8,8 +8,10 @@ class TApplication extends AdiantiCoreApplication
         new TSession;
         if ($_REQUEST)
         {
-            $class = isset($_REQUEST['class']) ? $_REQUEST['class']   : '';
-            
+            $ini  = parse_ini_file('application.ini');
+            $class = isset($_REQUEST['class']) ? $_REQUEST['class'] : '';
+            $public = in_array($class, $ini['public_classes']);
+
             if (TSession::getValue('logged')) // logged
             {
                 $programs = (array) TSession::getValue('programs'); // programs with permission
@@ -28,7 +30,7 @@ class TApplication extends AdiantiCoreApplication
                 else
                     AdiantiCoreApplication::loadPage('LoginForm');
             }
-            else if ($class == 'LoginForm')
+            else if ($class == 'LoginForm' or $public)
             {
                 parent::run($debug);
             }

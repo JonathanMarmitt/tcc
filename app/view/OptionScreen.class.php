@@ -19,7 +19,7 @@ class OptionScreen extends TPage
     {
         parent::__construct();
 
-        TScript::create("setGeolocation()");
+        //TScript::create("setGeolocation()");
  
         require_once('app/templates/theme1/libraries.html');
 

@@ -60,8 +60,8 @@ if(isset($accessToken))
     TSession::setValue('programs',$programs);
 
     //$frontpage = $user->frontpage;
-    TScript::create("location.href = 'index.php?class=OptionScreen'");
+    TScript::create("location.href = 'index.php?class=StoreBuy'");
     
     //AdiantiCoreApplication::gotoPage('EmptyPage'); // reload
-    TSession::setValue('frontpage', 'EmptyPage');
+    //TSession::setValue('frontpage', 'EmptyPage');
 }

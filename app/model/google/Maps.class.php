@@ -120,8 +120,66 @@ HTML;
 			<div>Precisão: {$precisao} metros</div>
 HTML;
 		}
-	
+
 		return str_replace("\n", "", $html);
+	}
+
+	public function addMap()
+	{
+		$script = <<<HTML
+			    var map;
+			    function initMap()
+			    {
+			      	map = new google.maps.Map(document.getElementById('map'), {
+			        	center: {lat: $this->lat, lng: $this->lng},
+			        	zoom: 15,
+			        	scrollwheel: false,
+			        	streetViewControl: false
+		      	})};
+HTML;
+
+        return $script;
+	}
+
+	public function addMarkers()
+	{
+		if($this->marks)
+		{
+			$script = <<<HTML
+			var infowindow = new google.maps.InfoWindow();
+HTML;
+
+			foreach($this->marks as $mark)
+			{
+				$html = $this->getInfoWindowHtml($mark->purshase, $mark->people, $mark->store, $mark->description);
+
+				$script .= <<<HTML
+				distance = calcDistance($this->lat,$this->lng,$mark->lat,$mark->lng);
+
+				if(distance < $this->limit)
+				{
+					var marker = new google.maps.Marker({
+						map: map,
+						position : {lat: $mark->lat, lng: $mark->lng},
+						opacity: 0.7
+					});
+					markers.push(marker);
+									
+					var content = "{$html}";
+					//content += "<div>Distancia:"+distance+"</div>";
+					
+					google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+					    return function() {
+					        infowindow.setContent(content);
+					        infowindow.open(map,marker);
+					    };
+					})(marker,content,infowindow));
+				}
+HTML;
+			}
+
+        	return $script;
+    	}
 	}
 
 	public function apiScript($show = true)
@@ -141,7 +199,7 @@ HTML;
 	private function scripts()
 	{
         $script = <<<HTML
-         		<script type="text/javascript">
+         		<script type="text/javascript" id="maps">
 			    var map;
 			    function initMap()
 			    {
@@ -171,6 +229,7 @@ HTML;
 								position : {lat: $mark->lat, lng: $mark->lng},
 								opacity: 0.7
 							});
+							markers.push(marker);
 											
 							var content = "{$html}";
 							//content += "<div>Distancia:"+distance+"</div>";
@@ -198,8 +257,21 @@ HTML;
 	{
 		$this->addMarkYouAreHere();
 
+		TScript::create("var markers = [];");
+
 		$this->apiScript();
+		
 		echo $this->scripts();
+
+		/*$a = $this->scripts();
+		$b = $this->addMap();
+
+		echo <<<HTML
+		<script>
+			$a
+			$b
+		</script>
+HTML;*/
 
 		$replaces = array();
 		// trocar tamanho pq vai ser responsivo, add no css
@@ -210,5 +282,7 @@ HTML;
 
         $this->html_maps->enableSection('main', $replaces);
         $this->html_maps->show();
+		
+		//echo $this->addMarkers();
 	}
 }

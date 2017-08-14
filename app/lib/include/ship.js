@@ -154,10 +154,10 @@ function setGeolocation()
 		function success(pos) {
 		  var crd = pos.coords;
 
-		  console.log('Sua posição atual é:');
+		  /*console.log('Sua posição atual é:');
 		  console.log('Latitude : ' + crd.latitude);
 		  console.log('Longitude: ' + crd.longitude);
-		  console.log('Mais ou menos ' + crd.accuracy + ' metros.');
+		  console.log('Mais ou menos ' + crd.accuracy + ' metros.');*/
 
 		  __adianti_ajax_exec('class=Geolocation&method=setLocation&static=1&lat='+crd.latitude+'&lng='+crd.longitude+'&acu='+crd.accuracy,'alert',true)
 		  //return {'lat': crd.latitude, 'lng': crd.longitude, 'acu': crd.accuracy};
@@ -182,12 +182,19 @@ function showDivLocation()
 	alert('Mostrar div de pedir permissao para geolocation')
 }
 
-function changemaps(field)
+function changemaps()
 {
-	$('#maps-script').remove()
-	
+	Adianti.waitMessage = 'Carregando...';
+	__adianti_block_ui();
+
+	//$('script[src*=maps]').remove()
+	//$('#maps-script').remove()
+	//$('#maps').remove()
+	//$('#map').empty()
+
+	field = $('[name=distance]');
 	if($('#maps-script')[0] == undefined)
-		__adianti_ajax_exec('class=StoreBuy&method=refresh&store_id=1&val='+$(field).val(),true)
+		__adianti_ajax_exec('class=StoreBuy&method=refresh&store_id=1&val='+field.val(),true)
 	else
 		console.log($('#maps-script')[0])
 }

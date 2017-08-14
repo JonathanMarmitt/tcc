@@ -114,11 +114,12 @@ class Purshase extends TRecord
             return $this->maps_address;
     }
 
-    public static function getCurrentByStore($store_id, $people_id = null)
+    public static function getCurrentByStore($store_id = null, $people_id = null)
     {
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('store_id','=',$store_id));
         $criteria->add(new TFilter('status_id','<>', Status::getStatusCanceled()));
+        if($store_id)
+            $criteria->add(new TFilter('store_id','=',$store_id));
         if($people_id)
             $criteria->add(new TFilter('people_id','<>',$people_id));
 
